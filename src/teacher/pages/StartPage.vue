@@ -1,65 +1,81 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" v-if="loginedTeacher">
     <h2>Доска для учителя</h2>
 
-    <b-tabs content-class="mt-3">
-      <b-tab title="Создание" active>
-        <b-card header="Создать новое упражнение">
-          <b-card-text>Выбери тип упражнения из выпадающего списка</b-card-text>
-          <b-dropdown
-            variant="outline-primary"
-            text="Упражнения"
-            class="m-2"
-            size="lg"
-            offset="-2"
-          >
-            <b-dropdown-item>
-              <router-link
-                to="/teacher/fill-empty/create"
-                class="link link-dark"
-              >
-                "Заполни пробелы"
-              </router-link>
-            </b-dropdown-item>
-          </b-dropdown>
-        </b-card>
-      </b-tab>
+    <a-tabs v-model:activeKey="activeKey">
+      <a-tab-pane key="1" tab="Создание">
+        <p>Выбери тип упражнения из выпадающего списка:</p>
+        <a-dropdown>
+          <a class="ant-dropdown-link" @click.prevent>
+            Упражнения <DownOutlined />
+          </a>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <router-link to="/teacher/fill-empty/create">
+                  "Заполни пробелы"
+                </router-link>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </a-tab-pane>
 
-      <b-tab title="Все упражнения">
-        <b-card header="Список упражнений" v-if="tasks">
-          <ul>
-            <li v-for="(v, i) in ids" :key="i">
-              <router-link :to="`/teacher/${tasks[v].type}/edit/${v}`">
-                {{ tasks[v].taskTitle }}
+      <a-tab-pane key="2" tab="Все упражнения" force-render>
+        <a-list size="small" bordered :data-source="ids">
+          <template #renderItem="{ item }">
+            <a-list-item>
+              <router-link :to="`/teacher/${tasks[item].type}/edit/${v}`">
+                {{ tasks[item].taskTitle }}
               </router-link>
-            </li>
-          </ul>
-        </b-card>
-
-        <b-card v-else>Пока пусто...</b-card>
-      </b-tab>
-      <b-tab title="Студенты" disabled> список студентов ага </b-tab>
-    </b-tabs>
+            </a-list-item>
+          </template>
+        </a-list>
+      </a-tab-pane>
+      <!-- <a-tab-pane key="3" tab="Студенты"> На будущее... </a-tab-pane> -->
+    </a-tabs>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
-import { onValue } from "firebase/database";
-import { fbDatabase, fbRef } from "@/firebase";
+import { computed, onMounted, ref } from "vue";
+
+import fbService from "@/services/fbService.js";
+
+import { DownOutlined } from "@ant-design/icons-vue";
+
+import { useTeacherStore } from "@/stores/teacher";
 
 export default {
+  components: { DownOutlined },
   setup() {
+    const activeKey = ref("1");
     const tasks = ref(null);
-    const sections = ref([]);
+
     const ids = ref([]);
 
-    const starCountRef = fbRef(fbDatabase, "/tasks");
-
-    onValue(starCountRef, (snapshot) => {
-      ids.value = Object.keys(snapshot.val());
-      tasks.value = snapshot.val();
+    const teacherStore = useTeacherStore();
+    const loginedTeacher = computed(() => {
+      return teacherStore.teacher;
     });
+
+    // onMounted(loadTasks);
+
+    // async function loadTasks() {
+    //   try {
+    //     const response = await fbService.fetchList("/tasks");
+    //     console.log(response);
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // }
+
+    // const starCountRef = fbRef(fbDatabase, "/tasks");
+
+    // onValue(starCountRef, (snapshot) => {
+    //   ids.value = Object.keys(snapshot.val());
+    //   tasks.value = snapshot.val();
+    // });
 
     // function getTasksBySection(name) {
     //   let array = [];
@@ -73,9 +89,11 @@ export default {
 
     return {
       // getTasksBySection,
-      sections,
       tasks,
       ids,
+      activeKey,
+      DownOutlined,
+      loginedTeacher,
     };
   },
 };
