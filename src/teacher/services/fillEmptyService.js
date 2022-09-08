@@ -32,6 +32,10 @@ class FillEmptyService extends FirebaseService {
     );
   }
 
+  delete(id) {
+    return set(fbRef(fbDatabase, "tasks/" + id), null);
+  }
+
   fetchById(id) {
     const starCountRef = fbRef(fbDatabase, "/tasks/" + id);
 

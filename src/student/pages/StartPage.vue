@@ -1,31 +1,48 @@
 <template>
   <div class="wrapper">
-    <ul>
-      <li v-for="(v, i) in ids" :key="i">
-        <router-link :to="`/student/task/${tasks[v].type}/${v}`">{{
-          tasks[v].taskTitle
-        }}</router-link>
-      </li>
-    </ul>
+    <a-list size="small" bordered :data-source="ids" v-if="ids">
+      <template #renderItem="{ item }">
+        <a-list-item>
+          <router-link :to="`/teacher/${tasks[item].type}/edit/${item}`">
+            {{ tasks[item].taskTitle ? tasks[item].taskTitle : "Упражнение" }}
+          </router-link>
+        </a-list-item>
+      </template>
+    </a-list>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
-import { onValue } from "firebase/database";
-import { fbDatabase, fbRef } from "@/firebase";
+import { onMounted, ref } from "vue";
+
+import { loadTasks } from "@/helpers/fbHelpers.js";
 
 export default {
   setup() {
-    const tasks = ref([]);
+    const tasks = ref(null);
     const ids = ref([]);
-    const starCountRef = fbRef(fbDatabase, "/tasks");
 
-    onValue(starCountRef, (snapshot) => {
-      const data = snapshot.val();
-      ids.value = Object.keys(data);
-      tasks.value = data;
-    });
+    onMounted(load);
+
+    async function load() {
+      try {
+        const response = await loadTasks("/tasks");
+        if (response !== null) {
+          tasks.value = response;
+          ids.value = Object.keys(response);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    // const starCountRef = fbRef(fbDatabase, "/tasks");
+
+    // onValue(starCountRef, (snapshot) => {
+    //   const data = snapshot.val();
+    //   ids.value = Object.keys(data);
+    //   tasks.value = data;
+    // });
 
     return {
       tasks,

@@ -4,14 +4,16 @@ import { localStorage } from "@/services/localStorage";
 export const useTeacherStore = defineStore({
   id: "teacher",
   state: () => ({
-    teacher: localStorage.get("polex-teacher") || null,
+    teacher: null || localStorage.get("polex-teacher"),
   }),
-  // getters: {
-  //   doubleCount: (state) => state.counter * 2,
-  // },
   actions: {
-    get() {
-      this.counter++;
+    setTeacher(data) {
+      this.teacher = data;
+      localStorage.set("polex-teacher", this.teacher);
+    },
+    removeTeacher() {
+      localStorage.remove("polex-teacher");
+      this.teacher = null;
     },
   },
 });

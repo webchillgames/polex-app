@@ -1,12 +1,19 @@
 <template>
   <div>
-    <b-input-group prepend="Название задания" class="mb-2">
-      <b-form-input aria-label="Task title" v-model="title" />
-    </b-input-group>
-
-    <b-input-group prepend="Ссылка на youtube ролик" class="mb-2">
-      <b-form-input aria-label="youtube link" v-model="link" />
-    </b-input-group>
+    <a-input
+      v-model:value="title"
+      addon-before="Название задания"
+      :style="{
+        margin: '10px 0',
+      }"
+    />
+    <a-input
+      v-model:value="link"
+      addon-before="Ссылка на youtube ролик"
+      :style="{
+        margin: '10px 0',
+      }"
+    />
 
     <InfoCollapse
       :data="YOTUBE_LINK_INFO"

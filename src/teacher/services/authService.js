@@ -1,19 +1,14 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { localStorage } from "@/services/localStorage";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-export class authService {
-  authWithPass(email, password) {
+import { useTeacherStore } from "@/stores/teacher";
+
+class AuthService {
+  async auth(email, password) {
+    const store = useTeacherStore();
     const auth = getAuth();
-
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        localStorage.set("polex-teacher", user);
-      })
-      .catch((error) => {
-        // const errorCode = error.code;
-        // const errorMessage = error.message;
-        console.log(error);
-      });
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    store.setTeacher(res.user.accessToken);
   }
 }
+
+export const authService = new AuthService();

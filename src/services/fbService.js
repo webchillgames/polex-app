@@ -1,7 +1,7 @@
 import { onValue } from "firebase/database";
 import { fbDatabase, fbRef } from "@/firebase";
 
-export default class fbService {
+class FBService {
   fetchList(list) {
     const starCountRef = fbRef(fbDatabase, list);
 
@@ -14,3 +14,5 @@ export default class fbService {
     });
   }
 }
+
+export const fbService = new FBService();

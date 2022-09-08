@@ -4,7 +4,7 @@ import FillEmptyTeacher from "@/teacher/pages/FillEmpty.vue";
 import StartPageStudent from "@/student/pages/StartPage.vue";
 import HomePage from "@/home/HomePage.vue";
 import FillEmptyStudent from "@/student/pages/FillEmpty.vue";
-import TeacherAuth from "@/teacher/pages/TeacherAuthPAge";
+import TeacherAuth from "@/teacher/pages/TeacherAuthPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
