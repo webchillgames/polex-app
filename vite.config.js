@@ -15,6 +15,7 @@ export default defineConfig({
       "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
     },
   },
+  base: "/polex-app/",
   server: {
     port: 8080,
     hot: true,
