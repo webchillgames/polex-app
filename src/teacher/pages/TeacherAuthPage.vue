@@ -1,8 +1,16 @@
 <template>
   <div>
     <h2>Привет! Здесь нужно ввести специальные учительские данные для входа</h2>
-    <a-input v-model:value="login" placeholder="Логин" />
-    <a-input v-model:value="password" placeholder="Пароль" />
+    <a-input
+      v-model:value="login"
+      placeholder="Логин"
+      :style="{ margin: '10px 0' }"
+    />
+    <a-input
+      v-model:value="password"
+      placeholder="Пароль"
+      :style="{ margin: '10px 0' }"
+    />
     <a-button
       type="primary"
       block
@@ -36,9 +44,8 @@ import router from "@/router";
 
 export default {
   setup() {
-    const login = ref("polex-teacher@gmail.com");
-    const password = ref("kLxsiz");
-
+    const login = ref("");
+    const password = ref("");
     const showError = ref(false);
 
     const teacherStore = useTeacherStore();
