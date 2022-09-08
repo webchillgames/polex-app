@@ -3,7 +3,7 @@
     <a-list size="small" bordered :data-source="ids" v-if="ids">
       <template #renderItem="{ item }">
         <a-list-item>
-          <router-link :to="`/teacher/${tasks[item].type}/edit/${item}`">
+          <router-link :to="`/student/${tasks[item].type}/${item}`">
             {{ tasks[item].taskTitle ? tasks[item].taskTitle : "Упражнение" }}
           </router-link>
         </a-list-item>

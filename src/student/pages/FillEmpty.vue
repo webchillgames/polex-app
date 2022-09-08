@@ -1,36 +1,30 @@
 <template>
   <div class="wrapper">
     <p v-if="isLoading">Загрузка упражнения...</p>
-    <b-card v-else-if="isDone">Задание выполнено</b-card>
-    <b-card v-else header="Задание: вставьте пропущенные буквы">
-      <b-card-text v-if="title">{{ title }}</b-card-text>
+    <p v-else-if="isDone">Задание выполнено</p>
 
-      <InfoCollapse
-        :data="FILL_EMPTY_INFO_STUDENT"
-        title="Инструкция"
-        id="howDoIt"
-      />
-      <b-card-text
-        >Прогресс: {{ currentId + 1 }} / {{ task.length }}</b-card-text
-      >
-      <b-card>
-        <div class="d-flex flex-row">
-          <div
-            v-for="(v, i) in task[currentId].lesson"
-            :key="i"
-            class="d-flex flex-row"
-          >
-            <input
-              v-if="v === '_'"
-              class="input"
-              @input="(e) => setChar(e, i, task[currentId].word)"
-            />
-            <span v-else class="item d-flex flex-row">{{ v }}</span>
-          </div>
+    <div v-else>
+      <h3 v-if="title">{{ title }}</h3>
+      <p>Задание: вставьте пропущенные буквы</p>
+
+      <div class="d-flex flex-row" v-if="task" :style="{ margin: '20px 0' }">
+        <div
+          v-for="(v, i) in task[currentId].lesson"
+          :key="i"
+          class="d-flex flex-row"
+        >
+          <input
+            v-if="v === '_'"
+            class="input"
+            @input="(e) => setChar(e, i, task[currentId].word)"
+          />
+          <span v-else class="item d-flex flex-row">{{ v }}</span>
         </div>
-      </b-card>
-      <YoutubeFrame v-if="url" :url="url" />
-    </b-card>
+      </div>
+
+      <a-progress :percent="progress" />
+      <YoutubeFrame v-if="url" :url="url" :style="{ margin: '20px 0' }" />
+    </div>
   </div>
 </template>
 
@@ -44,11 +38,10 @@ import { onValue } from "firebase/database";
 
 import { FILL_EMPTY_INFO_STUDENT } from "@/assets/tips.js";
 
-import InfoCollapse from "@/components/InfoCollapse.vue";
 import YoutubeFrame from "@/components/YoutubeFrame.vue";
 
 export default {
-  components: { InfoCollapse, YoutubeFrame },
+  components: { YoutubeFrame },
   setup() {
     const route = useRoute();
     const task = ref([]);
@@ -61,19 +54,25 @@ export default {
     const isLoading = ref(true);
     const isDone = ref(false);
 
+    const progress = computed(() => {
+      return Math.ceil((currentId.value * 100) / task.value.length);
+    });
+
     function loadTask() {
       const starCountRef = fbRef(fbDatabase, "/tasks/" + route.params.id);
       onValue(starCountRef, (snapshot) => {
-        const data = snapshot.val();
-        task.value = data.data;
+        const res = snapshot.val();
+
+        task.value = res.data;
+        title.value = res.taskTitle;
+        url.value = res.youtubeLink;
+
         isLoading.value = false;
-        title.value = data.taskTitle;
       });
     }
 
     function setChar(e, i, rightWord) {
       let result = comparedItem.value;
-      console.log(result);
 
       result = `${result.slice(0, i)}${e.target.value}${result.slice(i + 1)}`;
 
@@ -98,10 +97,10 @@ export default {
       isLoading,
       currentId,
       isDone,
-      InfoCollapse,
       FILL_EMPTY_INFO_STUDENT,
       YoutubeFrame,
       title,
+      progress,
     };
   },
 };
@@ -109,13 +108,13 @@ export default {
 
 <style lang="scss" scoped>
 .item {
-  min-width: 30px;
+  min-width: 50px;
   align-items: center;
   justify-content: center;
 }
 
 .input {
-  width: 30px;
+  width: 50px;
 }
 
 .item,

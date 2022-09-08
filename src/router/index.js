@@ -37,7 +37,7 @@ const router = createRouter({
       component: StartPageStudent,
     },
     {
-      path: "/student/task/fill-empty/:id",
+      path: "/student/fill-empty/:id",
       name: "student-task-page",
       component: FillEmptyStudent,
     },
