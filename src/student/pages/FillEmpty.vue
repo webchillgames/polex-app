@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <p v-if="isLoading">Загрузка упражнения...</p>
-    <p v-else-if="isDone">Задание выполнено</p>
+    <p v-else-if="isDone">Задание выполнено! Отличная работа</p>
 
     <div v-else>
       <h3 v-if="title">{{ title }}</h3>
@@ -49,7 +49,8 @@ export default {
     const url = ref("");
     const title = ref("");
 
-    const comparedItem = computed(() => task.value[currentId.value].lesson);
+    // const comparedItem = computed(() => task.value[currentId.value].lesson);
+    const comparedItem = ref("");
 
     const isLoading = ref(true);
     const isDone = ref(false);
@@ -63,6 +64,7 @@ export default {
       onValue(starCountRef, (snapshot) => {
         const res = snapshot.val();
 
+        comparedItem.value = res.data[currentId.value].lesson;
         task.value = res.data;
         title.value = res.taskTitle;
         url.value = res.youtubeLink;
@@ -72,17 +74,23 @@ export default {
     }
 
     function setChar(e, i, rightWord) {
-      let result = comparedItem.value;
+      const editedWord = comparedItem.value.split("");
 
-      result = `${result.slice(0, i)}${e.target.value}${result.slice(i + 1)}`;
+      editedWord[i] = e.target.value;
+      comparedItem.value = editedWord.join("");
 
-      if (result === rightWord) {
+      if (comparedItem.value === rightWord) {
         setTimeout(() => {
           if (currentId.value === task.value.length - 1) {
             isDone.value = true;
           } else {
             currentId.value = currentId.value + 1;
-            e.target.value = "";
+            comparedItem.value = task.value[currentId.value].lesson;
+
+            const inputs = document.querySelectorAll("input");
+            inputs.forEach((v) => {
+              v.value = "";
+            });
           }
         }, 1000);
       }
@@ -111,16 +119,17 @@ export default {
   min-width: 50px;
   align-items: center;
   justify-content: center;
+  border: 1px solid #000;
 }
 
 .input {
   width: 50px;
+  border: 1px solid orange;
 }
 
 .item,
 .input {
   margin-right: 2px;
   padding: 10px 5px;
-  border: 1px solid #000;
 }
 </style>
