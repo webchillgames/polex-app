@@ -79,7 +79,7 @@ export default {
       editedWord[i] = e.target.value;
       comparedItem.value = editedWord.join("");
 
-      if (comparedItem.value === rightWord) {
+      if (comparedItem.value.toLowerCase() === rightWord.toLowerCase()) {
         setTimeout(() => {
           if (currentId.value === task.value.length - 1) {
             isDone.value = true;
