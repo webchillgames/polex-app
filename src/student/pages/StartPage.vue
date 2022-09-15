@@ -1,4 +1,5 @@
 <template>
+<!-- идея игры - типо где надо да нет отвеить за 5 сек  -->
   <div class="wrapper">
     <a-list size="small" bordered :data-source="ids" v-if="ids">
       <template #renderItem="{ item }">

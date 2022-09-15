@@ -5,6 +5,7 @@ import StartPageStudent from "@/student/pages/StartPage.vue";
 import HomePage from "@/home/HomePage.vue";
 import FillEmptyStudent from "@/student/pages/FillEmpty.vue";
 import TeacherAuth from "@/teacher/pages/TeacherAuthPage.vue";
+import VideosEditor from "@/teacher/pages/VideosEditor.vue";
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -19,6 +20,11 @@ const router = createRouter({
       path: "/teacher/auth",
       name: "teacher-auth",
       component: TeacherAuth,
+    },
+    {
+      path: "/teacher/settings/videos",
+      name: "teacher-settings-videos",
+      component: VideosEditor,
     },
     {
       path: "/teacher/fill-empty/:action",

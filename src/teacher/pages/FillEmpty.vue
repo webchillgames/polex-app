@@ -86,12 +86,12 @@ import router from "@/router";
 import InfoCollapse from "@/components/InfoCollapse.vue";
 import TaskInfo from "@/teacher/components/TaskInfo.vue";
 import YoutubeFrame from "@/components/YoutubeFrame.vue";
-
+import ModalOk from "@/components/ModalOk.vue";
 import TeacherView from "../views/TeacherView.vue";
 
-import { fillEmptyService } from "@/teacher/services/fillEmptyService";
+// import { fillEmptyService } from "@/teacher/services/fillEmptyService";
+import { firebaseService } from "@/services/firebaseService.js";
 
-import ModalOk from "@/components/ModalOk.vue";
 
 export default {
   components: { TaskInfo, YoutubeFrame, TeacherView, ModalOk },
@@ -136,7 +136,7 @@ export default {
       id.value = route.params.id;
 
       try {
-        const response = await fillEmptyService.fetchById(route.params.id);
+        const response = await firebaseService.fetchById(route.params.id);
 
         finalList.value = response.data;
         youtubeLink.value = response.youtubeLink;
@@ -154,7 +154,7 @@ export default {
 
     async function createTask() {
       try {
-        await fillEmptyService.create({
+        await firebaseService.create({
           youtubeLink: youtubeLink.value,
           taskTitle: taskTitle.value,
           data: finalList.value,
@@ -174,7 +174,7 @@ export default {
       };
 
       try {
-        await fillEmptyService.edit(id.value, payload);
+        await firebaseService.edit(id.value, payload);
         showModal("Успешно сохранено");
       } catch (e) {
         console.log(e);
@@ -183,7 +183,7 @@ export default {
 
     async function deleteTask() {
       try {
-        await fillEmptyService.delete(id.value);
+        await firebaseService.delete(id.value);
         showModal("Успешно удалено");
         router.push({ path: "/teacher/start" });
       } catch (e) {

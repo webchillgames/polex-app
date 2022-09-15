@@ -36,7 +36,13 @@
           </a-list>
         </a-tab-pane>
 
-        <a-tab-pane key="3" tab="Выход" force-render>
+        <a-tab-pane key="3" tab="Главная страница" force-render>
+          <router-link to="/teacher/settings/videos">
+            Настройка сетки видео
+          </router-link>
+        </a-tab-pane>
+
+        <a-tab-pane key="4" tab="Выход" force-render>
           <a-button type="primary" @click="logout">Выход</a-button>
         </a-tab-pane>
       </a-tabs>

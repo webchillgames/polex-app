@@ -1,19 +1,7 @@
 import { onValue, set, push } from "firebase/database";
 import { fbDatabase, fbRef } from "@/firebase";
 
-class FirebaseService {
-  createFirebasePayload(payload) {
-    const firebasePayload = { type: this.type, ...payload };
-
-    Object.keys(firebasePayload).forEach((key) => {
-      if (firebasePayload[key] === undefined) {
-        Reflect.deleteProperty(firebasePayload, key);
-      }
-    });
-
-    return firebasePayload;
-  }
-}
+import {FirebaseService} from "@/services/firebaseService.js";
 
 class FillEmptyService extends FirebaseService {
   type = "fill-empty";
