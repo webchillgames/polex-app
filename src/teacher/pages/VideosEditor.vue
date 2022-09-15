@@ -20,7 +20,11 @@
 
     <div v-if="videos.length > 0">
       <div v-for="(v, i) in videos" :key="i" class="videos-editor__wrapper">
-        <YoutubeFrame :url="v.url" />
+        <YoutubeFrame
+          :url="v.url"
+          :play="i === currentPlayingVideoId"
+          @click="currentPlayingVideoId = i"
+        />
 
         <a-button
           type="primary"
@@ -58,6 +62,7 @@ export default {
     const videos = ref([]);
     const modalIsShowing = ref(false);
     const modalText = ref("");
+    const currentPlayingVideoId = ref(null);
 
     watch(modalIsShowing, (newV, prevV) => {
       if (prevV && !newV) {
@@ -115,6 +120,7 @@ export default {
       YOTUBE_LINK_INFO,
       ModalOk,
       YoutubeFrame,
+      currentPlayingVideoId,
     };
   },
 };
@@ -123,9 +129,6 @@ export default {
 <style lang="scss">
 .videos-editor {
   .youtube-iframe {
-    width: 268px; //вычтено тестами
-    height: auto;
-
     margin-right: 10px;
   }
 

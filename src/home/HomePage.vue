@@ -1,9 +1,16 @@
 <template>
   <div class="home">
     <h2>Добро пожаловать, студент</h2>
+
+    <h3>Переходи проходить наши упражнения</h3>
+    <router-link to="/student/start">Клик сюда</router-link>
     <div class="home__videos">
       <div class="home__video" v-for="(v, i) in videos" :key="i">
-        <YoutubeFrame :url="v.url" />
+        <YoutubeFrame
+          :url="v.url"
+          :play="i === currentPlayingVideoId"
+          @click="currentPlayingVideoId = i"
+        />
       </div>
 
       <p>
@@ -28,6 +35,7 @@ export default {
 
   setup() {
     const videos = ref([]);
+    const currentPlayingVideoId = ref(null);
 
     onMounted(loadData);
     async function loadData() {
@@ -43,7 +51,7 @@ export default {
         console.log(e);
       }
     }
-    return { videos, YoutubeFrame };
+    return { videos, YoutubeFrame, currentPlayingVideoId };
   },
 };
 </script>
