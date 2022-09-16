@@ -14,6 +14,7 @@
           class="d-flex flex-row"
         >
           <input
+            maxlength="1"
             v-if="v === '_'"
             class="input"
             @input="(e) => setChar(e, i, task[currentId].word)"
@@ -23,7 +24,13 @@
       </div>
 
       <a-progress :percent="progress" />
-      <YoutubeFrame v-if="url" :url="url" :style="{ margin: '20px 0' }" />
+      <YoutubeFrame
+        v-if="url"
+        :url="url"
+        :style="{ margin: '20px 0' }"
+        :play="isPlay"
+        @click="isPlay = true"
+      />
     </div>
   </div>
 </template>
@@ -48,6 +55,7 @@ export default {
     const currentId = ref(0);
     const url = ref("");
     const title = ref("");
+    const isPlay = ref(false);
 
     // const comparedItem = computed(() => task.value[currentId.value].lesson);
     const comparedItem = ref("");
@@ -109,6 +117,7 @@ export default {
       YoutubeFrame,
       title,
       progress,
+      isPlay,
     };
   },
 };
