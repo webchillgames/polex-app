@@ -52,6 +52,7 @@ export default {
 <style lang="scss">
 .youtube {
   &__preview {
+    max-width: 268px;
     position: relative;
     cursor: pointer;
     object-fit: cover;

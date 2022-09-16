@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
     <h2>Доска для учителя</h2>
+    <p>Привет, Аня и Костя! Отличной вам работы! Я с вами</p>
 
     <TeacherView>
       <a-tabs v-model:activeKey="activeKey">
@@ -15,6 +16,11 @@
                 <a-menu-item>
                   <router-link to="/teacher/fill-empty/create">
                     "Заполни пробелы"
+                  </router-link>
+                </a-menu-item>
+                <a-menu-item>
+                  <router-link to="/teacher/chose-translation/create">
+                    "Выбери перевод"
                   </router-link>
                 </a-menu-item>
               </a-menu>

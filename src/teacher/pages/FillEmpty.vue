@@ -1,123 +1,97 @@
 <template>
-  <TeacherView>
-    <div class="wrapper">
-      <h2 class="my-2">{{ title }}</h2>
-      <p v-if="isLoading">Загрузка упражнения...</p>
+  <p v-if="isLoading">Загрузка упражнения...</p>
+  <TaskView
+    v-else
+    @save="save"
+    @delete-task="deleteTask"
+    :isLoading="isLoading"
+    :modalSettings="modalSettings"
+    :currentData="currentData"
+    :cantSave="cantSave"
+  >
+    <p>2 шаг: Добавляй по одному слову</p>
 
-      <a-tabs v-model:activeKey="activeKey" v-else>
-        <a-tab-pane key="1" tab="Добавление описания">
-          <p>
-            1 шаг: Заполни поля, если хочешь, они не являются обязательными.
-            Результат сохраняется автоматически
-          </p>
-          <TaskInfo
-            @updated="setInfo"
-            class="my-2"
-            :currentTitle="taskTitle"
-            :currentLink="youtubeLink"
-          />
+    <a-textarea
+      v-model:value="textarea"
+      placeholder="Пиши тут..."
+      @keydown="keydown"
+      :auto-size="{ minRows: 1, maxRows: 2 }"
+    />
 
-          <YoutubeFrame v-if="youtubeLink" :url="youtubeLink" />
-        </a-tab-pane>
+    <a-button type="primary" @click="addNewWord" :style="{ margin: '10px 0' }">
+      Добавить в список
+    </a-button>
 
-        <a-tab-pane key="2" tab="Добавление новых слов">
-          <p>2 шаг: Добавляй по одному слову</p>
-
-          <a-textarea
-            v-model:value="textarea"
-            placeholder="Пиши тут..."
-            @keydown="keydown"
-            :auto-size="{ minRows: 1, maxRows: 2 }"
-          />
-
-          <a-button
-            type="primary"
-            @click="addNewWord"
-            :style="{ margin: '10px 0' }"
-            >Добавить в список</a-button
-          >
-
-          <div v-if="finalList">
-            <div
-              v-for="(v, i) in finalList"
-              :key="i"
-              :style="{ display: 'flex', margin: '10px 0' }"
-            >
-              <a-button
-                :style="{ display: 'flex', margin: '10px 5px' }"
-                v-for="(c, j) in v.lesson"
-                :key="j"
-                @click="() => hideChar(i, j)"
-              >
-                {{ c }}
-              </a-button>
-              <a-button
-                type="primary"
-                @click="() => removeItem(v.lesson)"
-                :style="{ margin: '10px 15px' }"
-                >Удалить</a-button
-              >
-            </div>
-          </div>
-
-          <a-button type="primary" @click="submit" :style="{ margin: '10px 0' }"
-            >Сохранить упражнение</a-button
-          >
-        </a-tab-pane>
-      </a-tabs>
-
-      <a-button
-        v-if="isEditMode"
-        @click="deleteTask"
-        :style="{ margin: '10px 0' }"
-        >Удалить упражнение</a-button
+    <div v-if="finalList">
+      <div
+        v-for="(v, i) in finalList"
+        :key="i"
+        :style="{ display: 'flex', margin: '10px 0' }"
       >
-      <ModalOk v-model="modalIsShowing" :text="modalText" />
+        <a-button
+          :style="{ display: 'flex', margin: '10px 5px' }"
+          v-for="(c, j) in v.lesson"
+          :key="j"
+          @click="() => hideChar(i, j)"
+        >
+          {{ c }}
+        </a-button>
+        <a-button
+          type="primary"
+          @click="() => removeItem(v.lesson)"
+          :style="{ margin: '10px 15px' }"
+          >Удалить</a-button
+        >
+      </div>
     </div>
-  </TeacherView>
+  </TaskView>
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 import { useRoute } from "vue-router";
 import router from "@/router";
 
-import InfoCollapse from "@/components/InfoCollapse.vue";
-import TaskInfo from "@/teacher/components/TaskInfo.vue";
-import YoutubeFrame from "@/components/YoutubeFrame.vue";
-import ModalOk from "@/components/ModalOk.vue";
-import TeacherView from "../views/TeacherView.vue";
-
-// import { fillEmptyService } from "@/teacher/services/fillEmptyService";
 import { firebaseService } from "@/services/firebaseService.js";
 
+import TaskView from "@/teacher/views/TaskView.vue";
 
 export default {
-  components: { TaskInfo, YoutubeFrame, TeacherView, ModalOk },
+  components: { TaskView },
   setup() {
     const route = useRoute();
 
     const isEditMode = ref(route.params.action === "edit");
-    const isLoading = ref(isEditMode.value);
 
-    const title =
-      route.params.action === "create"
-        ? "Создание нового упражнения"
-        : "Редактирование упражнения";
-
-    const activeKey = ref("1");
-
-    const textarea = ref("");
     const id = ref(null);
 
     const modalIsShowing = ref(false);
     const modalText = ref("");
 
-    const youtubeLink = ref("");
-    const taskTitle = ref("");
-
+    const isLoading = ref(isEditMode.value);
     const finalList = ref([]);
+    const textarea = ref("");
+    const cantSave = computed(() => finalList.value.length === 0);
+
+    const currentYoutubeLink = ref("");
+    const currentTaskTitle = ref("");
+
+    const currentData = computed(() => {
+      return {
+        currentYoutubeLink: currentYoutubeLink.value,
+        currentTaskTitle: currentTaskTitle.value,
+      };
+    });
+
+    const modalSettings = computed(() => {
+      return {
+        modalIsShowing: modalIsShowing.value,
+        modalText: modalText.value,
+      };
+    });
+
+    onMounted(loadCurrentData);
 
     function addNewWord() {
       finalList.value.push({
@@ -136,11 +110,13 @@ export default {
       id.value = route.params.id;
 
       try {
-        const response = await firebaseService.fetchById(route.params.id);
-
+        const response = await firebaseService.fetchById(id.value, "/tasks/");
         finalList.value = response.data;
-        youtubeLink.value = response.youtubeLink;
-        taskTitle.value = response.taskTitle;
+        currentYoutubeLink.value = response.youtubeLink;
+
+        currentTaskTitle.value = response.taskTitle;
+
+        console.log(currentData.value);
       } catch (e) {
         console.log("Не удалось загрузить данные о задании");
       } finally {
@@ -148,42 +124,49 @@ export default {
       }
     }
 
-    function submit() {
-      isEditMode.value ? editTask() : createTask();
+    function save(info) {
+      isEditMode.value ? editTask(info) : createTask(info);
     }
 
-    async function createTask() {
+    async function createTask(info) {
       try {
-        await firebaseService.create({
-          youtubeLink: youtubeLink.value,
-          taskTitle: taskTitle.value,
-          data: finalList.value,
-        });
+        await firebaseService.create(
+          {
+            type: "fill-empty",
+            youtubeLink: info.youtubeLink,
+            taskTitle: info.taskTitle,
+            data: finalList.value,
+          },
+          "/tasks"
+        );
         showModal("Успешно сохранено");
         router.push({ path: "/teacher/start" });
       } catch (e) {
         console.log(e);
+        showModal("Что то пошло не так упс");
       }
     }
 
-    async function editTask() {
+    async function editTask(info) {
       const payload = {
-        youtubeLink: youtubeLink.value,
-        taskTitle: taskTitle.value,
+        type: "fill-empty",
+        youtubeLink: info.youtubeLink,
+        taskTitle: info.taskTitle,
         data: finalList.value,
       };
 
       try {
-        await firebaseService.edit(id.value, payload);
+        await firebaseService.edit(id.value, payload, "/tasks/");
         showModal("Успешно сохранено");
       } catch (e) {
+        showModal("Что то пошло не так упс");
         console.log(e);
       }
     }
 
     async function deleteTask() {
       try {
-        await firebaseService.delete(id.value);
+        await firebaseService.delete(id.value, "/tasks/");
         showModal("Успешно удалено");
         router.push({ path: "/teacher/start" });
       } catch (e) {
@@ -191,6 +174,7 @@ export default {
       }
     }
 
+    // Это можно как то вытащить в TaskView ??
     function showModal(text) {
       modalIsShowing.value = true;
       modalText.value = text;
@@ -202,8 +186,6 @@ export default {
         e.preventDefault();
       }
     }
-
-    onMounted(loadCurrentData);
 
     function removeItem(lesson) {
       const filtered = finalList.value.filter((v) => v.lesson !== lesson);
@@ -226,35 +208,24 @@ export default {
       });
     }
 
-    function setInfo(data) {
-      youtubeLink.value = data.youtubeLink;
-      taskTitle.value = data.taskTitle;
-    }
-
     return {
       deleteTask,
       keydown,
-      title,
       isLoading,
       id,
       hideChar,
-      submit,
+      save,
       textarea,
       removeItem,
       modalIsShowing,
       modalText,
-      InfoCollapse,
-      TaskInfo,
-      setInfo,
-      taskTitle,
-      youtubeLink,
-      YoutubeFrame,
-      TeacherView,
-      activeKey,
+      modalSettings,
+      currentData,
       finalList,
       addNewWord,
       isEditMode,
-      ModalOk,
+      TaskView,
+      cantSave,
     };
   },
 };
