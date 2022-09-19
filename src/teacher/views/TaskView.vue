@@ -58,8 +58,6 @@
         </a-button>
       </a-tab-pane>
     </a-tabs>
-
-    <ModalOk v-model="modalIsShowing" :text="modalText" />
   </div>
 </template>
 
@@ -68,7 +66,6 @@ import { computed, ref } from "vue";
 
 import InfoCollapse from "@/components/InfoCollapse.vue";
 import YoutubeFrame from "@/components/YoutubeFrame.vue";
-import ModalOk from "@/components/ModalOk.vue";
 
 import { YOTUBE_LINK_INFO } from "@/assets/tips.js";
 
@@ -76,12 +73,8 @@ import { useRoute } from "vue-router";
 
 export default {
   emits: ["save", "deleteTask"],
-  components: { InfoCollapse, YoutubeFrame, ModalOk },
+  components: { InfoCollapse, YoutubeFrame },
   props: {
-    modalSettings: {
-      type: Object,
-      required: true,
-    },
     currentData: {
       type: Object || null,
       required: true,
@@ -100,9 +93,7 @@ export default {
 
     const taskTitle = ref(props.currentData.currentTaskTitle || "");
     const youtubeLink = ref(props.currentData.currentYoutubeLink || "");
-    const modalIsShowing = ref(props.modalSettings.modalIsShowing || false);
 
-    const modalText = computed(() => props.modalSettings.modalText);
     const taskMode =
       route.params.action === "create"
         ? "Создание нового упражнения"
@@ -133,9 +124,6 @@ export default {
       InfoCollapse,
       YOTUBE_LINK_INFO,
       YoutubeFrame,
-      modalIsShowing,
-      ModalOk,
-      modalText,
     };
   },
 };

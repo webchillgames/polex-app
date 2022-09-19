@@ -4,9 +4,8 @@
   <TaskView
     v-else
     @save="save"
-    @delete-task="deleteTask"
+    @delete-task="onDeleteTask"
     :isLoading="isLoading"
-    :modalSettings="modalSettings"
     :currentData="currentData"
     :cantSave="cantSave"
   >
@@ -25,15 +24,19 @@
         <a-button type="primary" @click="add">Добавить</a-button>
       </div>
 
-      <div v-if="task.length > 0">
-        <div v-for="(v, i) in task" :key="i" class="choose-translation__item">
+      <div v-if="finalList.length > 0">
+        <div
+          v-for="(v, i) in finalList"
+          :key="i"
+          class="choose-translation__item"
+        >
           {{ v.word }}
           <MinusOutlined />
           {{ v.translation }}
 
           <a-button
             type="primary"
-            @click="() => removeItem(i)"
+            @click="() => deleteItem(i)"
             :style="{ margin: '10px 15px' }"
             >Удалить</a-button
           >
@@ -44,30 +47,28 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 import TaskView from "@/teacher/views/TaskView.vue";
 
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 import { MinusOutlined } from "@ant-design/icons-vue";
 
-import { taskService } from "@/teacher/services/taskService.js";
+import { useTasks } from "@/teacher/composables/useTasks.js";
+
+import { firebaseService } from "@/services/firebaseService.js";
 
 export default {
   components: { TaskView, MinusOutlined },
   setup() {
+    const { deleteTask, saveTask } = useTasks();
     const word = ref("");
     const translation = ref("");
-    const task = ref([]);
 
     const route = useRoute();
-    const router = useRouter();
 
     const isEditMode = ref(route.params.action === "edit");
-
-    const modalIsShowing = ref(false);
-    const modalText = ref("");
 
     const id = ref(null);
 
@@ -86,11 +87,16 @@ export default {
     });
 
     const cantSave = computed(() => {
-      return task.value.length === 0;
+      return finalList.value.length === 0;
     });
 
+    onMounted(loadCurrentData);
+
     function add() {
-      task.value.push({ word: word.value, translation: translation.value });
+      finalList.value.push({
+        word: word.value,
+        translation: translation.value,
+      });
       word.value = "";
       translation.value = "";
     }
@@ -103,57 +109,50 @@ export default {
         data: finalList.value,
       };
 
-      try {
-        await taskService.save(
-          payload,
-          isEditMode.value,
-          "/tasks",
-          `/${id.value}`
-        );
+      await saveTask(payload, isEditMode.value, `/${id.value}`);
+    }
 
-        router.push({ path: "/teacher/start/exercises" });
+    async function onDeleteTask() {
+      await deleteTask(id.value);
+    }
+
+    function deleteItem(idx) {
+      const filtered = finalList.value.filter((_, i) => i !== idx);
+      finalList.value = filtered;
+    }
+
+    async function loadCurrentData() {
+      if (route.params.action !== "edit") {
+        return;
+      }
+
+      id.value = route.params.id;
+
+      try {
+        const response = await firebaseService.fetchById(id.value, "/tasks/");
+        console.log(response);
+        finalList.value = response.data;
+        currentYoutubeLink.value = response.youtubeLink;
+        currentTaskTitle.value = response.taskTitle;
+
+        console.log(currentData.value);
       } catch (e) {
-        console.log(e);
+        console.log("Не удалось загрузить данные о задании");
+      } finally {
+        isLoading.value = false;
       }
     }
 
-    function deleteTask() {}
-
-    function removeItem(idx) {
-      const filtered = task.value.filter((v, i) => {
-        i !== idx;
-      });
-
-      task.value = filtered;
-    }
-
-    // Это можно как то вытащить в TaskView ??
-    // function showModal(text) {
-    //   modalIsShowing.value = true;
-    //   modalText.value = text;
-    //   loadCurrentData();
-    // }
-
-    const modalSettings = computed(() => {
-      return {
-        modalIsShowing: modalIsShowing.value,
-        modalText: modalText.value,
-      };
-    });
-
     return {
-      removeItem,
-      modalSettings,
-      modalIsShowing,
-      modalText,
+      deleteItem,
       isLoading,
       currentData,
       add,
       save,
-      deleteTask,
+      onDeleteTask,
       word,
       translation,
-      task,
+      finalList,
       TaskView,
       cantSave,
       MinusOutlined,

@@ -1,6 +1,6 @@
 <template>
   <div id="app-modal" class="app-modal flex-center">
-    <p class="app-modal__text"></p>
+    <div class="app-modal__text"></div>
     <a-button type="primary" @click="close"> Ok </a-button>
   </div>
 </template>
@@ -40,11 +40,15 @@ export default {
   min-height: 100px;
   border: 1px solid grey;
   padding: 15px;
-}
 
-.app-modal.show {
-  top: 5%;
-  opacity: 1;
-  transition: all 0.5s;
+  &__text {
+    margin-right: 10px;
+  }
+
+  &.show {
+    top: 5%;
+    opacity: 1;
+    transition: all 0.5s;
+  }
 }
 </style>

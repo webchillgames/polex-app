@@ -3,9 +3,8 @@
   <TaskView
     v-else
     @save="save"
-    @delete-task="deleteTask"
+    @delete-task="onDeleteTask"
     :isLoading="isLoading"
-    :modalSettings="modalSettings"
     :currentData="currentData"
     :cantSave="cantSave"
   >
@@ -52,24 +51,24 @@ import { computed, onMounted, ref } from "vue";
 
 import { firebaseService } from "@/services/firebaseService.js";
 
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 
 import TaskView from "@/teacher/views/TaskView.vue";
 
 import { taskService } from "@/teacher/services/taskService.js";
 
+import { useTasks } from "@/teacher/composables/useTasks.js";
+
 export default {
   components: { TaskView },
   setup() {
     const route = useRoute();
-    const router = useRouter();
+
+    const { deleteTask, saveTask } = useTasks();
 
     const isEditMode = ref(route.params.action === "edit");
 
     const id = ref(null);
-
-    const modalIsShowing = ref(false);
-    const modalText = ref("");
 
     const isLoading = ref(isEditMode.value);
     const finalList = ref([]);
@@ -83,13 +82,6 @@ export default {
       return {
         currentYoutubeLink: currentYoutubeLink.value,
         currentTaskTitle: currentTaskTitle.value,
-      };
-    });
-
-    const modalSettings = computed(() => {
-      return {
-        modalIsShowing: modalIsShowing.value,
-        modalText: modalText.value,
       };
     });
 
@@ -115,7 +107,6 @@ export default {
         const response = await firebaseService.fetchById(id.value, "/tasks/");
         finalList.value = response.data;
         currentYoutubeLink.value = response.youtubeLink;
-
         currentTaskTitle.value = response.taskTitle;
 
         console.log(currentData.value);
@@ -134,26 +125,11 @@ export default {
         data: finalList.value,
       };
 
-      try {
-        await taskService.save(
-          payload,
-          isEditMode.value,
-          "/tasks",
-          `/${id.value}`
-        );
-        router.push({ path: "/teacher/start/exercises" });
-      } catch (e) {
-        console.log(e);
-      }
+      await saveTask(payload, isEditMode.value, `/${id.value}`);
     }
 
-    async function deleteTask() {
-      try {
-        await taskService.delete(id.value, "/tasks/");
-        router.push({ path: "/teacher/start/exercises" });
-      } catch (e) {
-        console.log(e);
-      }
+    async function onDeleteTask() {
+      await deleteTask(id.value);
     }
 
     function keydown(e) {
@@ -184,7 +160,7 @@ export default {
     }
 
     return {
-      deleteTask,
+      onDeleteTask,
       keydown,
       isLoading,
       id,
@@ -192,9 +168,6 @@ export default {
       save,
       textarea,
       deleteItem,
-      modalIsShowing,
-      modalText,
-      modalSettings,
       currentData,
       finalList,
       addNewWord,
