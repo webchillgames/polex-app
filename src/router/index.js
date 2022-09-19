@@ -2,14 +2,17 @@ import { createRouter, createWebHashHistory } from "vue-router";
 
 import StartPageTeacher from "@/teacher/pages/StartPage.vue";
 import FillEmptyTeacher from "@/teacher/pages/FillEmpty.vue";
+import TeacherAuth from "@/teacher/pages/TeacherAuthPage.vue";
+import VideosEditor from "@/teacher/pages/VideosEditor.vue";
+import ChooseTranslationTeacher from "@/teacher/pages/ChooseTranslation.vue";
+
 import StartPageStudent from "@/student/pages/StartPage.vue";
 
 import HomePage from "@/home/HomePage.vue";
-import FillEmptyStudent from "@/student/pages/FillEmpty.vue";
-import TeacherAuth from "@/teacher/pages/TeacherAuthPage.vue";
 
-import VideosEditor from "@/teacher/pages/VideosEditor.vue";
-import ChooseTranslationTeacher from "@/teacher/pages/ChooseTranslation.vue";
+import FillEmptyStudent from "@/student/pages/FillEmpty.vue";
+
+import ChooseTranslationStudent from "@/student/pages/ChooseTranslation.vue";
 
 import { useTeacherStore } from "@/stores/teacher";
 
@@ -46,6 +49,10 @@ const router = createRouter({
     {
       path: "/student/fill-empty/:id",
       component: FillEmptyStudent,
+    },
+    {
+      path: "/student/choose-translation/:id",
+      component: ChooseTranslationStudent,
     },
     {
       path: "/",

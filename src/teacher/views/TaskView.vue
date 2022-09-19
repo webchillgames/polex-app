@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 import InfoCollapse from "@/components/InfoCollapse.vue";
 import YoutubeFrame from "@/components/YoutubeFrame.vue";

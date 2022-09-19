@@ -1,84 +1,72 @@
 <template>
-  <div class="wrapper">
-    <p v-if="isLoading">Загрузка упражнения...</p>
-    <p v-else-if="isDone">Задание выполнено! Отличная работа</p>
+  <p v-if="isLoading">Загрузка упражнения...</p>
+  <TaskView
+    :url="url"
+    :currentId="currentId"
+    :length="task.length"
+    :isDone="isDone"
+    v-else
+  >
+    <h3 v-if="title">{{ title }}</h3>
+    <p>Задание: вставьте пропущенные буквы</p>
 
-    <div v-else>
-      <h3 v-if="title">{{ title }}</h3>
-      <p>Задание: вставьте пропущенные буквы</p>
-
-      <div class="d-flex flex-row" v-if="task" :style="{ margin: '20px 0' }">
-        <div
-          v-for="(v, i) in task[currentId].lesson"
-          :key="i"
-          class="d-flex flex-row"
-        >
-          <input
-            maxlength="1"
-            v-if="v === '_'"
-            class="input"
-            @input="(e) => setChar(e, i, task[currentId].word)"
-          />
-          <span v-else class="item d-flex flex-row">{{ v }}</span>
-        </div>
+    <div class="d-flex flex-row" v-if="task" :style="{ margin: '20px 0' }">
+      <div
+        v-for="(v, i) in task[currentId].lesson"
+        :key="i"
+        class="d-flex flex-row"
+      >
+        <input
+          maxlength="1"
+          v-if="v === '_'"
+          class="input"
+          @input="(e) => setChar(e, i, task[currentId].word)"
+        />
+        <span v-else class="item d-flex flex-row">{{ v }}</span>
       </div>
-
-      <a-progress :percent="progress" />
-      <YoutubeFrame
-        v-if="url"
-        :url="url"
-        :style="{ margin: '20px 0' }"
-        :play="isPlay"
-        @click="isPlay = true"
-      />
     </div>
-  </div>
+  </TaskView>
 </template>
 
 <script>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 
 import { useRoute } from "vue-router";
-import { fbDatabase, fbRef } from "@/firebase";
 
-import { onValue } from "firebase/database";
+import { firebaseService } from "@/services/firebaseService.js";
 
 import { FILL_EMPTY_INFO_STUDENT } from "@/assets/tips.js";
 
-import YoutubeFrame from "@/components/YoutubeFrame.vue";
+import TaskView from "@/student/views/TaskView.vue";
 
 export default {
-  components: { YoutubeFrame },
+  components: { TaskView },
+
   setup() {
     const route = useRoute();
     const task = ref([]);
     const currentId = ref(0);
+
     const url = ref("");
     const title = ref("");
-    const isPlay = ref(false);
-
-    // const comparedItem = computed(() => task.value[currentId.value].lesson);
     const comparedItem = ref("");
 
     const isLoading = ref(true);
     const isDone = ref(false);
 
-    const progress = computed(() => {
-      return Math.ceil((currentId.value * 100) / task.value.length);
-    });
-
-    function loadTask() {
-      const starCountRef = fbRef(fbDatabase, "/tasks/" + route.params.id);
-      onValue(starCountRef, (snapshot) => {
-        const res = snapshot.val();
+    async function loadTask() {
+      try {
+        const res = await firebaseService.fetchById(route.params.id, "/tasks/");
 
         comparedItem.value = res.data[currentId.value].lesson;
         task.value = res.data;
         title.value = res.taskTitle;
         url.value = res.youtubeLink;
-
+      } catch (e) {
+        console.log(e);
+      } finally {
         isLoading.value = false;
-      });
+      }
     }
 
     function setChar(e, i, rightWord) {
@@ -114,10 +102,8 @@ export default {
       currentId,
       isDone,
       FILL_EMPTY_INFO_STUDENT,
-      YoutubeFrame,
+      TaskView,
       title,
-      progress,
-      isPlay,
     };
   },
 };
