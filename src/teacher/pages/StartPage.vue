@@ -3,76 +3,75 @@
     <h2>Доска для учителя</h2>
     <p>Привет, Аня и Костя! Отличной вам работы! Я с вами</p>
 
-    <TeacherView>
-      <a-tabs v-model:activeKey="activeKey">
-        <a-tab-pane key="1" tab="Создание">
-          <p>Выбери тип упражнения из выпадающего списка:</p>
-          <a-dropdown>
-            <a class="ant-dropdown-link" @click.prevent>
-              Упражнения <DownOutlined />
-            </a>
-            <template #overlay>
-              <a-menu>
-                <a-menu-item>
-                  <router-link to="/teacher/fill-empty/create">
-                    "Заполни пробелы"
-                  </router-link>
-                </a-menu-item>
-                <a-menu-item>
-                  <router-link to="/teacher/chose-translation/create">
-                    "Выбери перевод"
-                  </router-link>
-                </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-        </a-tab-pane>
-
-        <a-tab-pane key="2" tab="Все упражнения" force-render>
-          <a-list size="small" bordered :data-source="ids" v-if="ids">
-            <template #renderItem="{ item }">
-              <a-list-item>
-                <router-link :to="`/teacher/${tasks[item].type}/edit/${item}`">
-                  {{
-                    tasks[item].taskTitle ? tasks[item].taskTitle : "Упражнение"
-                  }}
+    <a-tabs v-model:activeKey="activeKey">
+      <a-tab-pane key="creating" tab="Создание">
+        <p>Выбери тип упражнения из выпадающего списка:</p>
+        <a-dropdown>
+          <a class="ant-dropdown-link" @click.prevent>
+            Упражнения <DownOutlined />
+          </a>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <router-link to="/teacher/fill-empty/create">
+                  "Заполни пробелы"
                 </router-link>
-              </a-list-item>
-            </template>
-          </a-list>
-        </a-tab-pane>
+              </a-menu-item>
+              <a-menu-item>
+                <router-link to="/teacher/choose-translation/create">
+                  "Выбери перевод"
+                </router-link>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </a-tab-pane>
 
-        <a-tab-pane key="3" tab="Главная страница" force-render>
-          <router-link to="/teacher/settings/videos">
-            Настройка сетки видео
-          </router-link>
-        </a-tab-pane>
+      <a-tab-pane key="exercises" tab="Все упражнения" force-render>
+        <a-list size="small" bordered :data-source="ids" v-if="ids">
+          <template #renderItem="{ item }">
+            <a-list-item>
+              <router-link :to="`/teacher/${tasks[item].type}/edit/${item}`">
+                {{
+                  tasks[item].taskTitle ? tasks[item].taskTitle : "Упражнение"
+                }}
+              </router-link>
+            </a-list-item>
+          </template>
+        </a-list>
+      </a-tab-pane>
 
-        <a-tab-pane key="4" tab="Выход" force-render>
-          <a-button type="primary" @click="logout">Выход</a-button>
-        </a-tab-pane>
-      </a-tabs>
-    </TeacherView>
+      <a-tab-pane key="main-page" tab="Главная страница" force-render>
+        <router-link to="/teacher/settings/videos">
+          Настройка сетки видео
+        </router-link>
+      </a-tab-pane>
+
+      <a-tab-pane key="logout" tab="Выход" force-render>
+        <a-button type="primary" @click="logout">Выход</a-button>
+      </a-tab-pane>
+    </a-tabs>
   </div>
 </template>
 
 <script>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 import { DownOutlined } from "@ant-design/icons-vue";
 
-import TeacherView from "@/teacher/views/TeacherView.vue";
-
 import { useTeacherStore } from "@/stores/teacher";
 
-import router from "@/router";
+import { useRouter, useRoute } from "vue-router";
 
 import { loadTasks } from "@/helpers/fbHelpers.js";
 
 export default {
-  components: { DownOutlined, TeacherView },
+  components: { DownOutlined },
   setup() {
-    const activeKey = ref("1");
+    const router = useRouter();
+    const route = useRoute();
+
+    const activeKey = ref(route.params.tab);
     const tasks = ref(null);
     const ids = ref([]);
 
@@ -86,6 +85,17 @@ export default {
       if (teacher.value) {
         load();
       }
+    });
+
+    watch(
+      () => route.params.tab,
+      () => {
+        activeKey.value = route.params.tab;
+      }
+    );
+
+    watch(activeKey, () => {
+      router.push(`/teacher/start/${activeKey.value}`);
     });
 
     async function load() {
@@ -122,7 +132,6 @@ export default {
       ids,
       activeKey,
       DownOutlined,
-      TeacherView,
       teacher,
     };
   },

@@ -1,7 +1,7 @@
 import { onValue, set, push } from "firebase/database";
 import { fbDatabase, fbRef } from "@/firebase";
 
-import {FirebaseService} from "@/services/firebaseService.js";
+import { FirebaseService } from "@/services/firebaseService.js";
 
 class FillEmptyService extends FirebaseService {
   type = "fill-empty";

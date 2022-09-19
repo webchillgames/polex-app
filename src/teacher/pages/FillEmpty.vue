@@ -38,7 +38,7 @@
         </a-button>
         <a-button
           type="primary"
-          @click="() => removeItem(v.lesson)"
+          @click="() => deleteItem(v.lesson)"
           :style="{ margin: '10px 15px' }"
           >Удалить</a-button
         >
@@ -50,17 +50,19 @@
 <script>
 import { computed, onMounted, ref } from "vue";
 
-import { useRoute } from "vue-router";
-import router from "@/router";
-
 import { firebaseService } from "@/services/firebaseService.js";
 
+import { useRouter, useRoute } from "vue-router";
+
 import TaskView from "@/teacher/views/TaskView.vue";
+
+import { taskService } from "@/teacher/services/taskService.js";
 
 export default {
   components: { TaskView },
   setup() {
     const route = useRoute();
+    const router = useRouter();
 
     const isEditMode = ref(route.params.action === "edit");
 
@@ -124,61 +126,34 @@ export default {
       }
     }
 
-    function save(info) {
-      isEditMode.value ? editTask(info) : createTask(info);
-    }
-
-    async function createTask(info) {
-      try {
-        await firebaseService.create(
-          {
-            type: "fill-empty",
-            youtubeLink: info.youtubeLink,
-            taskTitle: info.taskTitle,
-            data: finalList.value,
-          },
-          "/tasks"
-        );
-        showModal("Успешно сохранено");
-        router.push({ path: "/teacher/start" });
-      } catch (e) {
-        console.log(e);
-        showModal("Что то пошло не так упс");
-      }
-    }
-
-    async function editTask(info) {
+    async function save(data) {
       const payload = {
         type: "fill-empty",
-        youtubeLink: info.youtubeLink,
-        taskTitle: info.taskTitle,
+        youtubeLink: data.youtubeLink,
+        taskTitle: data.taskTitle,
         data: finalList.value,
       };
 
       try {
-        await firebaseService.edit(id.value, payload, "/tasks/");
-        showModal("Успешно сохранено");
+        await taskService.save(
+          payload,
+          isEditMode.value,
+          "/tasks",
+          `/${id.value}`
+        );
+        router.push({ path: "/teacher/start/exercises" });
       } catch (e) {
-        showModal("Что то пошло не так упс");
         console.log(e);
       }
     }
 
     async function deleteTask() {
       try {
-        await firebaseService.delete(id.value, "/tasks/");
-        showModal("Успешно удалено");
-        router.push({ path: "/teacher/start" });
+        await taskService.delete(id.value, "/tasks/");
+        router.push({ path: "/teacher/start/exercises" });
       } catch (e) {
         console.log(e);
       }
-    }
-
-    // Это можно как то вытащить в TaskView ??
-    function showModal(text) {
-      modalIsShowing.value = true;
-      modalText.value = text;
-      loadCurrentData();
     }
 
     function keydown(e) {
@@ -187,7 +162,7 @@ export default {
       }
     }
 
-    function removeItem(lesson) {
+    function deleteItem(lesson) {
       const filtered = finalList.value.filter((v) => v.lesson !== lesson);
       finalList.value = filtered;
     }
@@ -216,7 +191,7 @@ export default {
       hideChar,
       save,
       textarea,
-      removeItem,
+      deleteItem,
       modalIsShowing,
       modalText,
       modalSettings,
@@ -226,6 +201,7 @@ export default {
       isEditMode,
       TaskView,
       cantSave,
+      taskService,
     };
   },
 };

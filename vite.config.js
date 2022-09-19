@@ -15,7 +15,7 @@ export default defineConfig({
       "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
     },
   },
-  base: "/polex-app/",
+  base: process.env.NODE_ENV === "production" ? "/polex-app/" : "/",
   server: {
     port: 8080,
     hot: true,

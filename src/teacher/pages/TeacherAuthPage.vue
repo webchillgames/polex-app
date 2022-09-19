@@ -40,7 +40,8 @@ import { computed, onMounted, ref } from "vue";
 import { authService } from "@/teacher/services/authService.js";
 
 import { useTeacherStore } from "@/stores/teacher";
-import router from "@/router";
+
+import { useRouter } from "vue-router";
 
 export default {
   setup() {
@@ -48,6 +49,7 @@ export default {
     const password = ref("");
     const showError = ref(false);
 
+    const router = useRouter();
     const teacherStore = useTeacherStore();
 
     const teacher = computed(() => {
@@ -57,7 +59,7 @@ export default {
     async function auth() {
       try {
         await authService.auth(login.value, password.value);
-        router.push({ path: "/teacher/start" });
+        router.push({ path: "/teacher/start/creating" });
         console.log(teacher.value);
       } catch (e) {
         console.log(e);
@@ -67,7 +69,7 @@ export default {
 
     onMounted(() => {
       if (teacher.value) {
-        router.push({ path: "/teacher/start" });
+        router.push({ path: "/teacher/start/creating" });
       }
     });
 
