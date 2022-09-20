@@ -8,7 +8,7 @@
     v-else
   >
     <h3>Соедини слово и его перевод</h3>
-    {{ currentWord }} {{ currentTranslation }}
+   
     <div class="columns">
       <div class="column">
         <div v-for="(v, i) in editingTask" :key="i">
