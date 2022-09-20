@@ -13,9 +13,9 @@
       <div class="column">
         <div v-for="(v, i) in editingTask" :key="i">
           <button
-            @click="currentWord = i"
+            @click="currentWord = v"
             class="button"
-            :class="{ chosen: i === currentWord }"
+            :class="{ chosen: v === currentWord }"
           >
             {{ v.word }}
           </button>
@@ -66,22 +66,27 @@ export default {
     const correctAnswers = ref(0);
     const url = ref("");
     const title = ref("");
+
     const currentWord = ref(null);
     const currentTranslation = ref(null);
 
+    const userChosenBothWords = computed(
+      () => currentWord.value && currentTranslation.value
+    );
+
     onMounted(loadTask);
 
-    watch(currentTranslation, (v) => {
-      if (task.value[currentWord.value].translation === v) {
-        deleteChosenItems(v);
-
-        correctAnswers.value = correctAnswers.value + 1;
+    watch(userChosenBothWords, (v) => {
+      if (!v) {
+        return;
       }
-    });
 
-    watch(correctAnswers, () => {
-      currentWord.value = "";
-      currentTranslation.value = "";
+      if (currentWord.value.translation === currentTranslation.value) {
+        deleteChosenItems(currentWord.value);
+        correctAnswers.value = correctAnswers.value + 1;
+        currentWord.value = null;
+        currentTranslation.value = null;
+      }
     });
 
     function shuffleTranslations() {
@@ -101,9 +106,7 @@ export default {
     }
 
     function deleteChosenItems() {
-      const filtered = editingTask.value.filter(
-        (_, i) => currentWord.value !== i
-      );
+      const filtered = editingTask.value.filter((v) => currentWord.value !== v);
 
       const filteredTranslations = translations.value.filter(
         (t) => t !== currentTranslation.value
