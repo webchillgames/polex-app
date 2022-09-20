@@ -8,7 +8,20 @@
     v-else
   >
     <h3>Соедини слово и его перевод</h3>
-   
+    <div>
+      Подсказка:
+      <p v-if="!currentWord && !currentTranslation">
+        Выбери слово из первого столбца
+      </p>
+      <p v-if="currentWord && !currentTranslation">
+        Выбери его перевод из второго столбца
+      </p>
+      <p v-if="currentWord && currentTranslation">
+        Если ответ правильный - слова исчезнут. Если нет - попробуй выбрать
+        другой перевод
+      </p>
+    </div>
+
     <div class="columns">
       <div class="column">
         <div v-for="(v, i) in editingTask" :key="i">
