@@ -1,5 +1,5 @@
 <template>
-  <p v-if="isDone">Задание выполнено! Отличная работа</p>
+  <p v-if="isDone"><TaskEnd /></p>
 
   <div class="wrapper" v-else>
     <slot></slot>
@@ -16,10 +16,13 @@
 
 <script>
 import YoutubeFrame from "@/components/YoutubeFrame.vue";
+
 import { computed, ref } from "vue";
 
+import TaskEnd from "@/student/components/TaskEnd.vue";
+
 export default {
-  components: { YoutubeFrame },
+  components: { YoutubeFrame, TaskEnd },
   props: {
     url: {
       type: String,

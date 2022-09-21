@@ -10,19 +10,15 @@
     <h3 v-if="title">{{ title }}</h3>
     <p>Задание: вставьте пропущенные буквы</p>
 
-    <div class="d-flex flex-row" v-if="task" :style="{ margin: '20px 0' }">
-      <div
-        v-for="(v, i) in task[currentId].lesson"
-        :key="i"
-        class="d-flex flex-row"
-      >
+    <div v-if="task" :style="{ margin: '20px 0' }" class="fill-empty">
+      <div v-for="(v, i) in task[currentId].lesson" :key="i">
         <input
           maxlength="1"
           v-if="v === '_'"
-          class="input"
+          class="fill-empty__input"
           @input="(e) => setChar(e, i, task[currentId].word)"
         />
-        <span v-else class="item d-flex flex-row">{{ v }}</span>
+        <div v-else class="fill-empty__char">{{ v }}</div>
       </div>
     </div>
   </TaskView>
@@ -109,22 +105,33 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.item {
-  min-width: 50px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #000;
-}
+<style lang="scss">
+.fill-empty {
+  display: flex;
 
-.input {
-  width: 50px;
-  border: 1px solid orange;
-}
+  &__char {
+    display: flex;
+    justify-content: center;
+  }
 
-.item,
-.input {
-  margin-right: 2px;
-  padding: 10px 5px;
+  &__char,
+  &__input {
+    margin: 4px;
+    border: 1px solid rgba(#000, 0.2);
+    border-radius: 4px;
+    font-size: 18px;
+    line-height: 24px;
+    width: 40px;
+    padding: 10px;
+  }
+
+  &__input {
+    color: orange;
+  }
+
+  &__input:focus {
+    outline: none;
+    border: 1px solid orange;
+  }
 }
 </style>

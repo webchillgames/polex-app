@@ -1,18 +1,12 @@
 <template>
-  <div>
-    <b-button v-b-toggle="`${id}`" class="my-2" variant="outline-primary">
-      {{ title }}
-      <font-awesome-icon icon="fa-solid fa-chevron-down" />
-    </b-button>
-
-    <b-collapse :id="id">
-      <b-list-group>
-        <b-list-group-item v-for="(v, i) in data" :key="i">
-          {{ v }}
-        </b-list-group-item>
-      </b-list-group>
-    </b-collapse>
-  </div>
+  <a-collapse :accordion="true">
+    <a-collapse-panel :header="title">
+      <div v-for="(v, i) in data" :key="i">
+        <font-awesome-icon icon="fa-solid fa-hand" />
+        {{ v }}
+      </div>
+    </a-collapse-panel>
+  </a-collapse>
 </template>
 
 <script>
