@@ -112,8 +112,10 @@ export default {
 .fill-empty {
   &__task {
     padding: 40px 16px;
+    width: 100%;
     margin-top: 40px;
     display: flex;
+    flex-wrap: wrap;
   }
 
   &__char {
@@ -130,7 +132,7 @@ export default {
     font-size: 18px;
     line-height: 24px;
     width: 40px;
-    padding: 10px;
+    padding: 4px;
   }
 
   &__input {
