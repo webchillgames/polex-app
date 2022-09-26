@@ -95,6 +95,10 @@ export default {
     line-height: 35px;
     margin: 20px 0;
     color: #1c2323;
+
+    p {
+      margin: 0;
+    }
   }
 
   &__promo {
@@ -182,6 +186,59 @@ export default {
 
     display: flex;
     align-items: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .home {
+    &__adw {
+      flex-direction: column;
+
+      .home__img {
+        width: 100%;
+        height: 100px;
+      }
+    }
+
+    &__go {
+      padding: 16px;
+      border-radius: 20px 20px 20px 0px;
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 24px;
+      margin: 10px 0;
+    }
+
+    &__section-title {
+      font-size: 18px;
+      line-height: 25px;
+      margin-top: 60px;
+    }
+
+    &__promo {
+      flex-direction: column;
+
+      .home__img {
+        width: 100%;
+        height: 100px;
+      }
+    }
+
+    &__title {
+      font-size: 26px;
+      line-height: 35px;
+      margin: 0;
+    }
+
+    &__subtitle {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    &__videos {
+      margin-top: 40px;
+      width: 100%;
+    }
   }
 }
 </style>
