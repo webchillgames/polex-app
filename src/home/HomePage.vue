@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="home__promo">
-      <div>
+      <div class="home__wrapper">
         <p class="home__title">Давайте учить польский вместе с нами</p>
 
         <p class="home__subtitle">

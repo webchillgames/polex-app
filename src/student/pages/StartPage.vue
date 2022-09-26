@@ -1,7 +1,8 @@
 <template>
 <!-- идея игры - типо где надо да нет отвеить за 5 сек  -->
   <div class="wrapper">
-    <a-list size="small" bordered :data-source="ids" v-if="ids">
+    <h2>Упражнения</h2>
+    <a-list size="small" :data-source="ids" v-if="ids">
       <template #renderItem="{ item }">
         <a-list-item>
           <router-link :to="`/student/${tasks[item].type}/${item}`">
