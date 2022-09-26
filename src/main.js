@@ -16,6 +16,10 @@ const app = createApp(App);
 
 import "@/styles/style.scss";
 
+app.config.errorHandler = () => {
+  console.log("errorHandler is work!");
+};
+
 app
   .use(createPinia())
   .use(router)

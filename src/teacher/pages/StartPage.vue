@@ -89,8 +89,11 @@ export default {
 
     watch(
       () => route.params.tab,
-      () => {
-        activeKey.value = route.params.tab;
+      (val) => {
+        if (!val) {
+          return;
+        }
+        activeKey.value = val;
       }
     );
 

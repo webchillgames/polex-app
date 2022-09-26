@@ -17,4 +17,12 @@ export default defineConfig({
     port: 8080,
     hot: true,
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "@/styles/variables.scss";
+        @import "@/styles/fonts.scss";`,
+      },
+    },
+  },
 });
