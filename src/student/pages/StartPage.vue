@@ -1,16 +1,15 @@
 <template>
-<!-- идея игры - типо где надо да нет отвеить за 5 сек  -->
-  <div class="wrapper">
-    <h2>Упражнения</h2>
-    <a-list size="small" :data-source="ids" v-if="ids">
-      <template #renderItem="{ item }">
-        <a-list-item>
-          <router-link :to="`/student/${tasks[item].type}/${item}`">
-            {{ tasks[item].taskTitle ? tasks[item].taskTitle : "Упражнение" }}
-          </router-link>
-        </a-list-item>
-      </template>
-    </a-list>
+  <div class="wrapper start">
+    <h2 class="start__title">Упражнения</h2>
+    <ul class="start__list">
+      <li v-for="(v, i) in ids" :key="i" class="start__item">
+        <router-link :to="`/student/${tasks[v].type}/${v}`" class="start__link">
+          {{
+            tasks[v].taskTitle ? tasks[v].taskTitle : "Упражнение " + (i + 1)
+          }}
+        </router-link>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -53,3 +52,38 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.start {
+  padding: 0;
+
+  &__title {
+    text-align: center;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+  }
+
+  &__link {
+    padding: 8px 0;
+    color: $app-color;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    transition: color 0.5;
+
+    &:hover {
+      color: rgba($app-color, 0.5);
+    }
+  }
+}
+</style>

@@ -1,16 +1,26 @@
 <template>
   <p v-if="isDone"><TaskEnd /></p>
 
-  <div class="wrapper" v-else>
+  <div class="wrapper task" v-else>
     <slot></slot>
-    <a-progress :percent="progress" v-if="length" />
-    <YoutubeFrame
-      v-if="url"
-      :url="url"
-      :style="{ margin: '20px 0' }"
-      :play="isPlay"
-      @click="isPlay = true"
-    />
+
+    <div class="task__progress">
+      <p>Прогресс выполнения упражнения:</p>
+      <a-progress :percent="progress" v-if="length" />
+    </div>
+
+    <div class="task__video">
+      <p>
+        Видео для прокачки скиллов. <br />
+        Оно поможет лучше выполнить упражнение
+      </p>
+      <YoutubeFrame
+        v-if="url"
+        :url="url"
+        :play="isPlay"
+        @click="isPlay = true"
+      />
+    </div>
   </div>
 </template>
 
@@ -57,4 +67,20 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.task {
+  &__video {
+    margin-top: 60px;
+    padding: 16px;
+    border: 1px solid rgba(#ccc, 0.7);
+    border-radius: 20px 20px 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__progress {
+    margin: 40px 0;
+  }
+}
+</style>

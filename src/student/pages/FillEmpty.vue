@@ -7,18 +7,21 @@
     :isDone="isDone"
     v-else
   >
-    <h3 v-if="title">{{ title }}</h3>
-    <p>Задание: вставьте пропущенные буквы</p>
+    <div class="fill-empty">
+      <h2 v-if="title">{{ title }}</h2>
+      <p>Задание: вставьте пропущенные буквы</p>
+      <p>Если все правильно - откроется новое слово</p>
 
-    <div v-if="task" :style="{ margin: '20px 0' }" class="fill-empty">
-      <div v-for="(v, i) in task[currentId].lesson" :key="i">
-        <input
-          maxlength="1"
-          v-if="v === '_'"
-          class="fill-empty__input"
-          @input="(e) => setChar(e, i, task[currentId].word)"
-        />
-        <div v-else class="fill-empty__char">{{ v }}</div>
+      <div v-if="task" class="fill-empty__task">
+        <div v-for="(v, i) in task[currentId].lesson" :key="i">
+          <input
+            maxlength="1"
+            v-if="v === '_'"
+            class="fill-empty__input"
+            @input="(e) => setChar(e, i, task[currentId].word)"
+          />
+          <div v-else class="fill-empty__char">{{ v }}</div>
+        </div>
       </div>
     </div>
   </TaskView>
@@ -107,7 +110,11 @@ export default {
 
 <style lang="scss">
 .fill-empty {
-  display: flex;
+  &__task {
+    padding: 40px 16px;
+    margin-top: 40px;
+    display: flex;
+  }
 
   &__char {
     display: flex;
@@ -116,6 +123,7 @@ export default {
 
   &__char,
   &__input {
+    background-color: #fff;
     margin: 4px;
     border: 1px solid rgba(#000, 0.2);
     border-radius: 4px;

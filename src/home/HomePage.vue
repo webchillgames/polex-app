@@ -7,7 +7,8 @@
         <p class="home__subtitle">
           Все материалы подготовлены <br />
           преподавателем&nbsp;-&nbsp;переводчиком <br />
-          Анной Святченковой.
+          Анной Святченковой. <br />
+          Регистрироваться не нужно.
         </p>
         <router-link to="/student/start" class="home__go">Учиться</router-link>
       </div>
@@ -102,6 +103,7 @@ export default {
   }
 
   &__promo {
+    padding: 16px;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -176,7 +178,7 @@ export default {
   }
 
   &__wrapper {
-    padding: 16px;
+    padding: 8px;
   }
 
   &__adw {
