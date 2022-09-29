@@ -9,17 +9,12 @@
       <a-progress :percent="progress" v-if="length" />
     </div>
 
-    <div class="task__video">
+    <div class="task__video" v-if="url">
       <p>
         Видео для прокачки скиллов. <br />
         Оно поможет лучше выполнить упражнение
       </p>
-      <YoutubeFrame
-        v-if="url"
-        :url="url"
-        :play="isPlay"
-        @click="isPlay = true"
-      />
+      <YoutubeFrame :url="url" :play="isPlay" @click="isPlay = true" />
     </div>
   </div>
 </template>
