@@ -1,3 +1,9 @@
+body,
+#app,
+.main {
+    height: 100%;
+}
+
 .wrapper {
     max-width: 1024px;
     margin: 0 auto;
@@ -21,3 +27,4 @@ body {
     font-family: 'Play', Courier, sans-serif;
     color: #000;
 }
+

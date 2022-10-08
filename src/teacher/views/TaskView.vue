@@ -8,16 +8,17 @@
           1 шаг: Заполни поля, если хочешь, они не являются обязательными.
           Результат сохраняется автоматически
         </p>
+
         <a-input
           v-model:value="taskTitle"
-          addon-before="Название задания"
+          placeholder="Название задания"
           :style="{
             margin: '10px 0',
           }"
         />
         <a-input
           v-model:value="youtubeLink"
-          addon-before="Ссылка на youtube ролик"
+          placeholder="Ссылка на youtube ролик"
           :style="{
             margin: '10px 0',
           }"
@@ -27,6 +28,9 @@
           :data="YOTUBE_LINK_INFO"
           title="Где взять ссылку"
           id="howGetLink"
+          :style="{
+            margin: '20px 0',
+          }"
         />
 
         <YoutubeFrame
@@ -37,25 +41,18 @@
         />
       </a-tab-pane>
 
-      <a-tab-pane key="2" tab="Добавление упражнения">
+      <a-tab-pane key="2" tab="Добавление упражнения" class="task-view__step">
         <slot />
 
-        <a-button
-          type="primary"
-          @click="save"
-          :disabled="cantSave"
-          class="task-view__button"
-        >
-          Сохранить упражнение
-        </a-button>
+        <div>
+          <a-button type="primary" @click="save" :disabled="cantSave">
+            Сохранить упражнение
+          </a-button>
 
-        <a-button
-          v-if="isEditMode"
-          @click="deleteTask"
-          class="task-view__button"
-        >
-          Удалить упражнение
-        </a-button>
+          <a-button v-if="isEditMode" @click="deleteTask">
+            Удалить упражнение
+          </a-button>
+        </div>
       </a-tab-pane>
     </a-tabs>
   </div>
@@ -128,15 +125,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.task-view {
-  &__button {
-    margin: 30px 0;
-  }
-}
-
-.task-view__button + .task-view__button {
-  margin-left: 30px;
-}
-</style>

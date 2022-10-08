@@ -9,38 +9,43 @@
     :currentData="currentData"
     :cantSave="cantSave"
   >
-    <div class="choose-translation">
-      <div class="choose-translation__inputs">
-        <a-input
-          v-model:value="word"
-          addon-before="слово"
-          class="choose-translation__input"
-        />
-        <a-input
-          v-model:value="translation"
-          addon-before="перевод"
-          class="choose-translation__input"
-        />
-        <a-button type="primary" @click="add">Добавить</a-button>
-      </div>
+    <div>
+      <a-input
+        v-model:value="word"
+        placeholder="Слово"
+        :style="{
+          margin: '10px 0',
+        }"
+      />
+      <a-input
+        v-model:value="translation"
+        placeholder="Перевод"
+        :style="{
+          margin: '10px 0',
+        }"
+      />
+      <a-button
+        type="primary"
+        @click="add"
+        :style="{
+          margin: '20px 0',
+        }"
+        >Добавить</a-button
+      >
+    </div>
 
-      <div v-if="finalList.length > 0">
-        <div
-          v-for="(v, i) in finalList"
-          :key="i"
-          class="choose-translation__item"
+    <div v-if="finalList.length > 0">
+      <div v-for="(v, i) in finalList" :key="i">
+        {{ v.word }}
+        <MinusOutlined />
+        {{ v.translation }}
+
+        <a-button
+          type="primary"
+          @click="() => deleteItem(i)"
+          :style="{ margin: '10px 15px' }"
+          >Удалить</a-button
         >
-          {{ v.word }}
-          <MinusOutlined />
-          {{ v.translation }}
-
-          <a-button
-            type="primary"
-            @click="() => deleteItem(i)"
-            :style="{ margin: '10px 15px' }"
-            >Удалить</a-button
-          >
-        </div>
       </div>
     </div>
   </TaskView>
@@ -160,21 +165,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.choose-translation {
-  &__inputs {
-    display: flex;
-    align-items: center;
-  }
-
-  &__input {
-    margin-right: 10px;
-  }
-
-  &__item {
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
