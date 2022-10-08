@@ -44,15 +44,26 @@
       <a-tab-pane key="2" tab="Добавление упражнения" class="task-view__step">
         <slot />
 
-        <div>
-          <a-button type="primary" @click="save" :disabled="cantSave">
-            Сохранить упражнение
-          </a-button>
+        <a-button
+          type="primary"
+          @click="save"
+          :disabled="cantSave"
+          :style="{
+            margin: '10px 10px 10px 0',
+          }"
+        >
+          Сохранить упражнение
+        </a-button>
 
-          <a-button v-if="isEditMode" @click="deleteTask">
-            Удалить упражнение
-          </a-button>
-        </div>
+        <a-button
+          v-if="isEditMode"
+          @click="deleteTask"
+          :style="{
+            margin: '10px 0',
+          }"
+        >
+          Удалить упражнение
+        </a-button>
       </a-tab-pane>
     </a-tabs>
   </div>
