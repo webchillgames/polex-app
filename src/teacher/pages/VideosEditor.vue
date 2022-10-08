@@ -2,13 +2,14 @@
   <div class="videos-editor">
     <h3>Управление сеткой видео на Главной странице</h3>
 
+    <a-input v-model:value="input" placeholder="Вставь сюда сылку на ролик" />
     <InfoCollapse
       :data="YOTUBE_LINK_INFO"
       title="Где взять ссылку"
       id="howGetLink"
+      :style="{ margin: '10px 0 20px 0' }"
     />
 
-    <a-input v-model:value="input" placeholder="Вставь сюда сылку на ролик" />
     <a-button
       :disabled="input === ''"
       type="primary"
@@ -29,7 +30,7 @@
         <a-button
           type="primary"
           @click="() => remove(i)"
-          :style="{ margin: '10px 0' }"
+          :style="{ margin: '10px' }"
           >Удалить</a-button
         >
       </div>
@@ -128,10 +129,6 @@ export default {
 
 <style lang="scss">
 .videos-editor {
-  .youtube-iframe {
-    margin-right: 10px;
-  }
-
   &__wrapper {
     margin: 10px 0;
     display: flex;
