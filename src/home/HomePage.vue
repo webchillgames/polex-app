@@ -108,6 +108,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: $bg-light;
   }
 
   .home__img {
