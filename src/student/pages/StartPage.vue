@@ -1,7 +1,8 @@
 <template>
-  <div class="wrapper start">
-    <h2 class="start__title">Упражнения</h2>
-    <ul class="start__list">
+  <div class="start">
+    <div class="start__title wrapper">Упражнения</div>
+
+    <ul class="start__list wrapper">
       <li v-for="(v, i) in ids" :key="i" class="start__item">
         <router-link :to="`/student/${tasks[v].type}/${v}`" class="start__link">
           {{
@@ -55,15 +56,20 @@ export default {
 
 <style lang="scss">
 .start {
-  padding: 0;
-
   &__title {
-    text-align: center;
+    background-color: $bg-light;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    display: flex;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+    box-shadow: 0 20px 20px rgba(#000, 10%);
   }
 
   &__list {
     list-style: none;
-    padding: 0;
     margin: 0;
   }
 
