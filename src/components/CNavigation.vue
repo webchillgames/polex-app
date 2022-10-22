@@ -1,20 +1,22 @@
 <template>
   <nav class="c-navigation">
-    <RouterLink to="/" class="c-navigation__logo">PolEx</RouterLink>
+    <div class="wrapper">
+      <RouterLink to="/" class="c-navigation__logo">PolEx</RouterLink>
 
-    <button type="button" @click="isOpen = true" class="c-navigation__open">
-      <font-awesome-icon icon="fa-solid fa-bars" />
-    </button>
+      <button type="button" @click="isOpen = true" class="c-navigation__open">
+        <font-awesome-icon icon="fa-solid fa-bars" />
+      </button>
 
-    <div class="c-navigation__list">
-      <router-link
-        v-for="(v, i) in navLinks"
-        :key="i"
-        :to="v.link"
-        class="c-navigation__link"
-        :class="{ active: activeTab === v.title }"
-        >{{ v.title }}</router-link
-      >
+      <div class="c-navigation__list">
+        <router-link
+          v-for="(v, i) in navLinks"
+          :key="i"
+          :to="v.link"
+          class="c-navigation__link"
+          :class="{ active: activeTab === v.title }"
+          >{{ v.title }}</router-link
+        >
+      </div>
     </div>
 
     <div class="c-navigation__menu" v-if="isOpen">
@@ -64,10 +66,13 @@ export default {
 
 <style lang="scss">
 .c-navigation {
-  justify-content: space-between;
   background-color: $bg-light;
-  display: flex;
-  align-items: center;
+
+  .wrapper {
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+  }
 
   &__list {
     display: none;

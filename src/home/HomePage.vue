@@ -1,40 +1,60 @@
 <template>
   <div class="home">
     <div class="home__promo">
-      <div class="home__wrapper">
-        <p class="home__title">Давайте учить польский вместе с нами</p>
+      <div class="wrapper">
+        <div>
+          <p class="home__title">
+            PolEx - сайт с упражнениями на польском языке
+          </p>
 
-        <p class="home__subtitle">
-          Все материалы подготовлены <br />
-          преподавателем&nbsp;-&nbsp;переводчиком <br />
-          Анной Святченковой. <br />
-          Регистрироваться не нужно.
-        </p>
-        <router-link to="/student/start" class="home__go">Учиться</router-link>
+          <div class="home__subtitle">
+            Мы активно развиваем наше комьюнити и стремимся вырасти в школу.
+            Сейчас, в тестовом режиме, для вас доступен наш сайт с упражнениями.
+            <br />
+            Приятный бонус - регистрироваться не нужно.
+          </div>
+
+          <CGoButton title="Упражнения" rLink="/student/start" />
+        </div>
+
+        <div class="home__games">
+          <CGamePreview link="ex1-min.jpeg" class="home__game" />
+          <CGamePreview link="ex2-min.jpeg" class="home__game" />
+        </div>
       </div>
-
-      <div class="home__img">
-        <img src="./../assets/poland-map.jpg" alt="map" />
+    </div>
+    <div class="wrapper">
+      <h2 class="home__section-title">Не только упражнения...</h2>
+      <div class="home__subtitle">
+        Будем рады видеть вас на нашем ютуб канале и в телеграм чате. Там вы
+        сможете подтянуть теорию, а так же задать вопросы. <br />
+        А те, кто хочет уровень занятий выше, приглашаем вас на индивидуальные
+        онлайн-занятия.
       </div>
     </div>
 
-    <div class="home__section-title"><p>Видео уроки</p></div>
+    <div class="home__benefits wrapper">
+      <CBenefitPreview v-for="v in BENEFITS" :key="v.id" :item="v" />
+    </div>
+    <!-- 
+    <h2 class="home__section-title">Видео уроки</h2>
+
     <div class="home__adw">
       <div class="home__img">
         <img src="./../assets/wroclaw.jpg" alt="wroclaw" />
-      </div>
+      </div> -->
 
-      <div class="home__wrapper">
+    <!-- <div class="home__wrapper">
         <p class="home__text">Еще больше видео уроков на Youtube канале Анны</p>
-        <a
-          class="home__go"
-          href="https://www.youtube.com/channel/UCDtQC29FioPUW1L3e1r5OCA"
-          >Смотреть</a
-        >
-      </div>
-    </div>
 
-    <div class="home__videos">
+        <CGoButton
+          title="Смотреть"
+          aHref="https://www.youtube.com/channel/UCDtQC29FioPUW1L3e1r5OCA"
+        />
+      </div>
+    </div> -->
+
+    <!-- <div class="home__videos">
       <div class="home__video" v-for="(v, i) in videos" :key="i">
         <YoutubeFrame
           :url="v.url"
@@ -42,7 +62,7 @@
           @click="currentPlayingVideoId = i"
         />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -52,9 +72,42 @@ import YoutubeFrame from "@/components/YoutubeFrame.vue";
 import { ref, onMounted } from "vue";
 
 import { firebaseService } from "@/services/firebaseService.js";
+import CGoButton from "./components/CGoButton.vue";
+import CGamePreview from "./components/CGamePreview.vue";
+import CBenefitPreview from "./components/CBenefitPreview.vue";
+
+const BENEFITS = [
+  {
+    id: 1,
+    title: "YouTube канал",
+    icon: "fa-brands fa-youtube",
+    text: "С уроками от преподавателя",
+    background: "#eaf8f6",
+    color: "#dd2a25",
+    link: "https://www.youtube.com/channel/UCDtQC29FioPUW1L3e1r5OCA",
+  },
+  {
+    id: 2,
+    title: "Telegram чат",
+    icon: "fa-brands fa-telegram",
+    text: "Новости, общение, поддержка",
+    background: "#fff2ee",
+    color: "#33a6d9",
+    link: "https://t.me/polishlesons",
+  },
+  {
+    id: 3,
+    title: "Ваш репетитор",
+    icon: "fa-solid fa-solid fa-person-chalkboard",
+    text: "Для максимального результата",
+    background: "#faeefa",
+    color: "515fe1",
+    link: "http://profi.ru/profile/SvyatchenkovaAP/?mobileApp=1",
+  },
+];
 
 export default {
-  components: { YoutubeFrame },
+  components: { YoutubeFrame, CGoButton, CGamePreview, CBenefitPreview },
 
   setup() {
     const videos = ref([]);
@@ -74,13 +127,36 @@ export default {
         console.log(e);
       }
     }
-    return { videos, YoutubeFrame, currentPlayingVideoId };
+    return {
+      videos,
+      YoutubeFrame,
+      currentPlayingVideoId,
+      CGoButton,
+      CGamePreview,
+      BENEFITS,
+      CBenefitPreview,
+    };
   },
 };
 </script>
 
 <style lang="scss">
 .home {
+  &__benefits {
+    padding-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__game {
+    animation: upDown 3s infinite;
+  }
+
+  &__game:nth-child(2) {
+    animation-delay: 1s;
+  }
+
   &__title {
     font-weight: 800;
     font-size: 40px;
@@ -88,160 +164,163 @@ export default {
     margin: 40px 0;
   }
 
-  &__section-title {
-    display: flex;
-    justify-content: center;
-    font-weight: 800;
+  &__subtitle {
+    font-weight: 400;
     font-size: 25px;
     line-height: 35px;
+    color: $font-light;
     margin: 20px 0;
-    color: #1c2323;
+    padding-left: 16px;
+    text-align: left;
 
-    p {
-      margin: 0;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2px;
+      height: 100%;
+      background-color: $app-color;
     }
   }
 
   &__promo {
-    padding: 16px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background-color: $bg-light;
-  }
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
 
-  .home__img {
-    flex-shrink: 0;
-    overflow: hidden;
-    width: 50%;
-    height: 100%;
-    border-radius: 20px 20px 20px 0;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .wrapper {
+      padding: 16px;
+      padding-bottom: 60px;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      grid-gap: 20px;
     }
-  }
-
-  &__go {
-    text-transform: uppercase;
-    padding: 16px;
-    color: #fff;
-    border-radius: 20px 20px 20px 0px;
-    font-weight: 800;
-    font-size: 25px;
-    line-height: 35px;
-    background-color: $app-color;
-    margin: 10px 0;
-    display: inline-block;
-    vertical-align: baseline;
-
-    &:hover {
-      color: #fff;
-      background-color: $app-color-hover;
-    }
-  }
-
-  &__subtitle {
-    margin: 40px 0;
-    font-weight: 400;
-    font-size: 25px;
-    line-height: 35px;
-    color: #404242;
-    margin: 20px 0;
-  }
-
-  &__videos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-    margin-top: 60px;
-    // justify-content: center;
-  }
-
-  &__video {
-    padding: 10px;
-  }
-
-  .youtube-iframe {
-    width: 268px; //вычтено тестами
-    height: auto;
-  }
-
-  &__text {
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 24px;
-    color: #404242;
-  }
-
-  &__wrapper {
-    padding: 8px;
   }
 
   &__adw {
-    & .home__img {
-      height: 200px;
-    }
+    flex-direction: column;
+  }
 
+  &__section-title {
+    font-size: 18px;
+    line-height: 25px;
+    margin-top: 60px;
+    text-align: center;
+  }
+
+  &__title {
+    font-size: 26px;
+    line-height: 35px;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  &__videos {
+    margin-top: 40px;
+    width: 100%;
+  }
+
+  &__games {
     display: flex;
-    align-items: center;
+    justify-content: center;
   }
 }
 
-@media (max-width: 767px) {
+@media (min-width: 1023px) {
   .home {
-    &__adw {
-      flex-direction: column;
+    &__benefits {
+      padding-bottom: 60px;
+    }
 
-      .home__img {
-        width: 100%;
-        height: 100px;
+    &__section-title {
+      text-align: center;
+      font-weight: 800;
+      font-size: 40px;
+      line-height: 55px;
+      margin: 50px 0;
+      color: #1c2323;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    &__promo {
+      .wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
       }
     }
 
     &__go {
-      padding: 16px;
-      border-radius: 20px 20px 20px 0px;
       font-weight: 800;
-      font-size: 18px;
-      line-height: 24px;
-      margin: 10px 0;
-    }
-
-    &__section-title {
-      font-size: 18px;
-      line-height: 25px;
-      margin-top: 60px;
-    }
-
-    &__promo {
-      flex-direction: column;
-
-      .home__img {
-        width: 100%;
-        height: 100px;
-      }
-    }
-
-    &__title {
-      font-size: 26px;
+      font-size: 25px;
       line-height: 35px;
-      margin: 0;
-    }
 
-    &__subtitle {
-      font-size: 18px;
-      line-height: 24px;
+      text-transform: uppercase;
+      padding: 16px;
+      color: #fff;
+      border-radius: 20px;
     }
 
     &__videos {
-      margin-top: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       width: 100%;
+      margin-top: 60px;
+      // justify-content: center;
     }
+
+    &__video {
+      padding: 10px;
+    }
+
+    .youtube-iframe {
+      width: 268px; //вычтено тестами
+      height: auto;
+    }
+
+    &__text {
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 24px;
+      color: #404242;
+    }
+
+    &__wrapper {
+      padding: 8px;
+    }
+
+    &__adw {
+      & .home__img {
+        height: 200px;
+      }
+
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+@keyframes upDown {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(10px);
+  }
+
+  100% {
+    transform: translateY(-1px);
   }
 }
 </style>
