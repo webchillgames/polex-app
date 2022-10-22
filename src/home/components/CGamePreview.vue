@@ -1,6 +1,6 @@
 <template>
   <div class="c-game-preview">
-    <img :src="`../src/assets/${link}`" alt="игра" />
+    <img :src="link" alt="игра" />
   </div>
 </template>
 
