@@ -18,8 +18,8 @@
         </div>
 
         <div class="home__games">
-          <CGamePreview link="/ex1-min.jpeg" class="home__game" />
-          <CGamePreview link="/ex2-min.jpeg" class="home__game" />
+          <CGamePreview link="ex1-min.jpeg" class="home__game" />
+          <CGamePreview link="ex2-min.jpeg" class="home__game" />
         </div>
       </div>
     </div>
