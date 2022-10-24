@@ -1,14 +1,19 @@
 <template>
   <div class="c-go-button">
-    <router-link :to="rLink" v-if="rLink">
+    <router-link :to="rLink" v-if="rLink" class="c-go-button__link">
       <span class="c-go-button__title">{{ title }}</span>
+
+      <font-awesome-icon
+        icon="fa-solid fa-arrow-right"
+        class="c-go-button__icon"
+      />
     </router-link>
 
-    <a :href="aHref" v-else
-      ><span class="c-go-button__title">{{ title }}</span></a
-    >
+    <a :href="aHref" v-else class="c-go-button__link"
+      ><span class="c-go-button__title">{{ title }}</span>
 
-    <font-awesome-icon icon="fa-solid fa-arrow-right" />
+      <font-awesome-icon icon="fa-solid fa-arrow-right"
+    /></a>
   </div>
 </template>
 
@@ -33,26 +38,32 @@ export default {
 
 <style lang="scss">
 .c-go-button {
+  display: flex;
   color: #fff;
-  background-color: $app-color;
-  display: inline-block;
-  vertical-align: baseline;
-  padding: 16px;
-  font-weight: 800;
-  font-size: 18px;
-  line-height: 24px;
-  margin: 10px 0;
-  border-radius: 10px;
-  cursor: pointer;
 
-  &:hover {
-    background-color: rgba($app-color, 50%);
-    transform: scale(1.05);
+  &__icon {
+    color: #fff;
   }
 
-  &:active {
-    background-color: rgba($app-color, 90%);
-    transform: scale(0.95);
+  &__link {
+    background-color: $app-color;
+    padding: 16px;
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 24px;
+    margin: 10px 0;
+    border-radius: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba($app-color, 50%);
+      transform: scale(1.05);
+    }
+
+    &:active {
+      background-color: rgba($app-color, 90%);
+      transform: scale(0.95);
+    }
   }
 
   &__title {

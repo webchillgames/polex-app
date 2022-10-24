@@ -7,6 +7,7 @@ import { faHand } from "@fortawesome/free-solid-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { faPersonChalkboard } from "@fortawesome/free-solid-svg-icons";
 
 import { faYoutube } from "@fortawesome/free-brands-svg-icons";
@@ -21,5 +22,6 @@ library.add(
   faArrowRight,
   faYoutube,
   faTelegram,
-  faPersonChalkboard
+  faPersonChalkboard,
+  faPlay
 );

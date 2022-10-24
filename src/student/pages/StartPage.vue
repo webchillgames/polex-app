@@ -1,13 +1,21 @@
 <template>
   <div class="start">
-    <div class="start__title wrapper">Упражнения</div>
+    <div class="start__top flex-center">
+      <div class="wrapper start__title">Упражнения</div>
+    </div>
 
     <ul class="start__list wrapper">
       <li v-for="(v, i) in ids" :key="i" class="start__item">
         <router-link :to="`/student/${tasks[v].type}/${v}`" class="start__link">
-          {{
-            tasks[v].taskTitle ? tasks[v].taskTitle : "Упражнение " + (i + 1)
-          }}
+          <div>
+            {{
+              tasks[v].taskTitle ? tasks[v].taskTitle : "Упражнение " + (i + 1)
+            }}
+          </div>
+
+          <div class="start__play flex-center">
+            <font-awesome-icon icon="fa-solid fa-play" />
+          </div>
         </router-link>
       </li>
     </ul>
@@ -57,14 +65,17 @@ export default {
 <style lang="scss">
 .start {
   &__title {
-    background-color: $bg-light;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    display: flex;
-    justify-content: center;
+    color: $app-color;
+    padding-bottom: 30px;
     font-size: 18px;
     line-height: 24px;
-    font-weight: 500;
+    font-weight: 800;
+  }
+
+  &__top {
+    background-color: $bg-light;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
     box-shadow: 0 20px 20px rgba(#000, 10%);
   }
 
@@ -74,21 +85,61 @@ export default {
   }
 
   &__item {
-    display: flex;
-    align-items: center;
-    margin: 8px 0;
+    width: 100%;
+  }
+
+  &__play {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 5px solid #fff;
   }
 
   &__link {
-    padding: 8px 0;
-    color: $app-color;
+    padding: 16px;
+    color: #fff;
     font-weight: 400;
     font-size: 18px;
     line-height: 24px;
     transition: color 0.5;
+    display: flex;
+    flex-shrink: 1;
+    justify-content: space-between;
+    align-items: center;
+    // background-color: $app-color;
+    border-radius: 30px;
+    margin: 16px 0;
+    background: linear-gradient(
+      90deg,
+      rgba(133, 81, 225, 1) 0%,
+      rgba(81, 95, 225, 1) 35%,
+      rgba(81, 177, 225, 1) 100%
+    );
 
     &:hover {
-      color: rgba($app-color, 0.5);
+      color: #fff;
+      box-shadow: 0 0 5px 2px $app-color;
+    }
+  }
+}
+
+@media (min-width: 767px) {
+  .start {
+    &__item {
+      width: 80%;
+    }
+  }
+}
+@media (min-width: 1023px) {
+  .start {
+    &__list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__item {
+      width: auto;
+      margin: 8px;
     }
   }
 }
