@@ -6,7 +6,7 @@
 
     <div class="task__progress">
       <p>Прогресс выполнения упражнения:</p>
-      <a-progress :percent="progress" v-if="length" />
+      <a-progress :percent="progress" v-if="length" strokeColor="#5b02f7" />
     </div>
 
     <div class="task__video" v-if="url">
@@ -64,10 +64,13 @@ export default {
 
 <style lang="scss">
 .task {
+  .ant-progress-text {
+    color: #fff;
+  }
+
   &__video {
     margin-top: 60px;
     padding: 16px;
-    border: 1px solid rgba(#ccc, 0.7);
     border-radius: 20px 20px 20px 0;
     display: flex;
     flex-direction: column;
@@ -75,7 +78,15 @@ export default {
   }
 
   &__progress {
-    margin: 40px 0;
+    color: #fff;
+    padding: 16px;
+    border-radius: 20px;
+    background: linear-gradient(
+      90deg,
+      rgba(133, 81, 225, 0.7427564775910365) 0%,
+      rgba(81, 95, 225, 0.7035407913165266) 35%,
+      rgba(81, 212, 225, 0.675529586834734) 100%
+    );
   }
 }
 </style>

@@ -8,7 +8,7 @@
     v-else
   >
     <div class="fill-empty">
-      <h2 v-if="title">{{ title }}</h2>
+      <h2 v-if="title" class="fill-empty__title">{{ title }}</h2>
       <p>Задание: вставьте пропущенные буквы</p>
       <p>Если все правильно - откроется новое слово</p>
 
@@ -20,7 +20,7 @@
             class="fill-empty__input"
             @input="(e) => setChar(e, i, task[currentId].word)"
           />
-          <div v-else class="fill-empty__char">{{ v }}</div>
+          <div v-else class="fill-empty__char flex-center">{{ v }}</div>
         </div>
       </div>
     </div>
@@ -110,29 +110,26 @@ export default {
 
 <style lang="scss">
 .fill-empty {
+  &__title {
+    font-weight: 800;
+  }
   &__task {
-    padding: 40px 16px;
     width: 100%;
-    margin-top: 40px;
+    margin: 40px 0;
     display: flex;
     flex-wrap: wrap;
-  }
-
-  &__char {
-    display: flex;
-    justify-content: center;
   }
 
   &__char,
   &__input {
     background-color: #fff;
-    margin: 4px;
-    border: 1px solid rgba(#000, 0.2);
+    border: 3px solid rgba($app-color, 0.2);
     border-radius: 4px;
-    font-size: 18px;
-    line-height: 24px;
-    width: 40px;
+    font-size: 28px;
+    line-height: 32px;
+    width: 50px;
     padding: 4px;
+    margin: 4px;
   }
 
   &__input {
