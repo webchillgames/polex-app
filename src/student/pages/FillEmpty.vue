@@ -2,25 +2,35 @@
   <p v-if="isLoading">Загрузка упражнения...</p>
   <TaskView
     :url="url"
-    :currentId="currentId"
+    :currentId="count"
     :length="task.length"
     :isDone="isDone"
     v-else
   >
     <div class="fill-empty">
-      <h2 v-if="title" class="fill-empty__title">{{ title }}</h2>
-      <p>Задание: вставьте пропущенные буквы</p>
-      <p>Если все правильно - откроется новое слово</p>
+      <div class="fill-empty__description">
+        <h2 v-if="title" class="fill-empty__title">{{ title }}</h2>
+        <p>Задание: вставьте пропущенные буквы</p>
+        <p>Подсказка: Если все правильно - откроется новое слово</p>
+      </div>
 
-      <div v-if="task" class="fill-empty__task">
-        <div v-for="(v, i) in task[currentId].lesson" :key="i">
-          <input
-            maxlength="1"
-            v-if="v === '_'"
-            class="fill-empty__input"
-            @input="(e) => setChar(e, i, task[currentId].word)"
-          />
-          <div v-else class="fill-empty__char flex-center">{{ v }}</div>
+      <div v-if="task" class="fill-empty__task-wrapper flex-center">
+        <div>
+          <div class="fill-empty__items">
+            <div
+              v-for="(v, i) in task[count].lesson"
+              :key="i"
+              class="fill-empty__item"
+            >
+              <input
+                maxlength="1"
+                v-if="v === '_'"
+                class="fill-empty__input"
+                @input="(e) => setChar(e, i, task[count].word)"
+              />
+              <span v-else class="fill-empty__char flex-center">{{ v }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -44,7 +54,7 @@ export default {
   setup() {
     const route = useRoute();
     const task = ref([]);
-    const currentId = ref(0);
+    const count = ref(0);
 
     const url = ref("");
     const title = ref("");
@@ -57,7 +67,7 @@ export default {
       try {
         const res = await firebaseService.fetchById(route.params.id, "/tasks/");
 
-        comparedItem.value = res.data[currentId.value].lesson;
+        comparedItem.value = res.data[count.value].lesson;
         task.value = res.data;
         title.value = res.taskTitle;
         url.value = res.youtubeLink;
@@ -69,19 +79,26 @@ export default {
     }
 
     function setChar(e, i, rightWord) {
-      const editedWord = comparedItem.value.split("");
+      if (e.target.value === "") {
+        return;
+      }
 
-      editedWord[i] = e.target.value;
-      comparedItem.value = editedWord.join("");
+      const editedWord = comparedItem.value.split(""); // ['ż', 'ó', 'ł', '_', 'y']
+      editedWord[i] = e.target.value; // ['ż', 'ó', 'ł', i, 'y']
+      comparedItem.value = editedWord.join(""); // (if i === 'D') =>  'żółDy'
 
+      // 'żółDy' === 'żółty'
+      // если ответ правильный
       if (comparedItem.value.toLowerCase() === rightWord.toLowerCase()) {
         setTimeout(() => {
-          if (currentId.value === task.value.length - 1) {
+          // и если это был последний ход
+          if (count.value === task.value.length - 1) {
             isDone.value = true;
           } else {
-            currentId.value = currentId.value + 1;
-            comparedItem.value = task.value[currentId.value].lesson;
-
+            count.value = count.value + 1;
+            // подставляем следующее слово
+            comparedItem.value = task.value[count.value].lesson;
+            // чистим инпуты
             const inputs = document.querySelectorAll("input");
             inputs.forEach((v) => {
               v.value = "";
@@ -89,6 +106,8 @@ export default {
           }
         }, 1000);
       }
+
+      // но если ответ неверный, то просто ничего не делаем
     }
 
     onMounted(loadTask);
@@ -98,7 +117,7 @@ export default {
       setChar,
       task,
       isLoading,
-      currentId,
+      count,
       isDone,
       FILL_EMPTY_INFO_STUDENT,
       TaskView,
@@ -110,15 +129,32 @@ export default {
 
 <style lang="scss">
 .fill-empty {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+
+  &__item {
+    display: inline-block;
+  }
+
   &__title {
     font-weight: 800;
   }
-  &__task {
-    width: 100%;
-    margin: 40px 0;
+
+  &__task-wrapper {
+    flex-grow: 1;
     display: flex;
-    flex-wrap: wrap;
+    padding: 8px;
+    border: 4px solid $bg-light;
+    border-radius: 20px;
+    margin: 8px 0;
   }
+
+  // &__task {
+  //   flex-wrap: wrap;
+  //   align-items: center;
+  //   justify-content: center;
+  // }
 
   &__char,
   &__input {
@@ -130,6 +166,9 @@ export default {
     width: 50px;
     padding: 4px;
     margin: 4px;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
   }
 
   &__input {

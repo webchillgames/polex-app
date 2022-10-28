@@ -1,8 +1,8 @@
 <template>
   <div class="app">
     <ModalOk />
-    <CNavigation />
-    <RouterView />
+    <div class="app__nav"><CNavigation :activeTab="activeTab" /></div>
+    <div class="app__content"><RouterView /></div>
   </div>
 </template>
 
@@ -49,5 +49,11 @@ export default {
 <style lang="scss">
 .app {
   position: relative;
+  display: flex;
+  flex-direction: column;
+
+  &__content {
+    flex-grow: 1;
+  }
 }
 </style>

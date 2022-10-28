@@ -53,6 +53,12 @@ const navLinks = [
 ];
 
 export default {
+  props: {
+    activeTab: {
+      type: String,
+      required: true,
+    }
+  },
   setup() {
     const isOpen = ref(false);
     return {
