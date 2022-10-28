@@ -2,7 +2,9 @@
   <div v-if="isDone" class="task-end"><TaskEnd /></div>
 
   <div class="wrapper task" v-else>
-    <slot class="content"></slot>
+    <div class="task__content">
+      <slot></slot>
+    </div>
 
     <div class="task__progress">
       <p>Прогресс выполнения упражнения:</p>
@@ -70,6 +72,12 @@ export default {
 
   .ant-progress-text {
     color: #fff;
+  }
+
+  &__content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
   }
 
   &__video {

@@ -8,7 +8,7 @@
     v-else
   >
     <h3>Соедини слово и его перевод</h3>
-    <div>
+    <!-- <div>
       Подсказка:
       <p v-if="!currentWord && !currentTranslation">
         Выбери слово из первого столбца
@@ -20,7 +20,7 @@
         Если ответ правильный - слова исчезнут. Если нет - попробуй выбрать
         другой перевод
       </p>
-    </div>
+    </div> -->
 
     <div class="columns">
       <div class="column">
@@ -95,10 +95,12 @@ export default {
       }
 
       if (currentWord.value.translation === currentTranslation.value) {
-        deleteChosenItems(currentWord.value);
-        correctAnswers.value = correctAnswers.value + 1;
-        currentWord.value = null;
-        currentTranslation.value = null;
+        setTimeout(() => {
+          deleteChosenItems(currentWord.value);
+          correctAnswers.value = correctAnswers.value + 1;
+          currentWord.value = null;
+          currentTranslation.value = null;
+        }, 500);
       }
     });
 
@@ -173,13 +175,16 @@ export default {
 }
 
 .button {
-  min-width: 100px;
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 800;
   margin: 8px;
-  color: #fff;
+  color: $app-color;
   flex-grow: 1;
-  background: orange;
-  border: none;
-  padding: 8px;
+  background: #fff;
+  border: 5px solid $app-color;
+  border-radius: 10px;
+  padding: 8px 16px;
 
   &:disabled {
     border-color: grey;
@@ -188,6 +193,7 @@ export default {
 }
 
 .chosen {
-  background: #4676d7;
+  background-color: $app-color;
+  color: #fff;
 }
 </style>
