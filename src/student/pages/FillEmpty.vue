@@ -6,34 +6,34 @@
     :length="task.length"
     :isDone="isDone"
     v-else
+    class="fill-empty"
   >
-    <div class="fill-empty">
-      <div class="fill-empty__description">
-        <h2 v-if="title" class="fill-empty__title">{{ title }}</h2>
-        <p>Задание: вставьте пропущенные буквы</p>
-        <p>Подсказка: Если все правильно - откроется новое слово</p>
-      </div>
+    <div>
+      <h2 v-if="title" class="fill-empty__title">{{ title }}</h2>
+      <p>Задание: вставьте пропущенные буквы</p>
+      <p>Подсказка: Если все правильно - откроется новое слово</p>
+    </div>
 
-      <div v-if="task" class="fill-empty__task-wrapper flex-center">
-        <div>
-          <div class="fill-empty__items">
-            <div
-              v-for="(v, i) in task[count].lesson"
-              :key="i"
-              class="fill-empty__item"
-            >
-              <input
-                maxlength="1"
-                v-if="v === '_'"
-                class="fill-empty__input"
-                @input="(e) => setChar(e, i, task[count].word)"
-              />
-              <span v-else class="fill-empty__char flex-center">{{ v }}</span>
-            </div>
+    <div v-if="task" class="fill-empty__task-wrapper flex-center">
+      <div>
+        <div class="fill-empty__items">
+          <div
+            v-for="(v, i) in task[count].lesson"
+            :key="i"
+            class="fill-empty__item"
+          >
+            <input
+              maxlength="1"
+              v-if="v === '_'"
+              class="fill-empty__input"
+              @input="(e) => setChar(e, i, task[count].word)"
+            />
+            <span v-else class="fill-empty__char flex-center">{{ v }}</span>
           </div>
         </div>
       </div>
     </div>
+
   </TaskView>
 </template>
 
@@ -127,11 +127,8 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .fill-empty {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
 
   &__item {
     display: inline-block;
@@ -150,12 +147,6 @@ export default {
     margin: 8px 0;
   }
 
-  // &__task {
-  //   flex-wrap: wrap;
-  //   align-items: center;
-  //   justify-content: center;
-  // }
-
   &__char,
   &__input {
     background-color: #fff;
@@ -166,18 +157,11 @@ export default {
     width: 50px;
     padding: 4px;
     margin: 4px;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-  }
-
-  &__input {
-    color: orange;
   }
 
   &__input:focus {
     outline: none;
-    border: 1px solid orange;
+    border-color: $app-color;
   }
 }
 </style>
