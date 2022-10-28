@@ -1,5 +1,5 @@
 <template>
-  <p v-if="isDone"><TaskEnd /></p>
+  <div v-if="isDone" class="task-end"><TaskEnd /></div>
 
   <div class="wrapper task" v-else>
     <slot class="content"></slot>
